@@ -1,0 +1,152 @@
+*{
+    box-sizing:border-box;
+    margin: 0px;
+    font-family: sans-serif;
+}
+html{
+    overflow-x: hidden;
+    scroll-padding-top:5rem;
+    scroll-behavior: smooth;
+}
+html::-webkit-scrollbar{
+    display: none;
+}
+html::-webkit-scrollbar-track{
+    background: transparent;
+}
+html::-webkit-scrollbar-thumb{
+    background: var(--black);
+}
+header .header1{
+    background:#fff;
+    padding:1.3rem 9%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+header .header1 h1{
+    font-size: 25px;
+    font-weight: 600;
+    color:rgb(240, 85, 64);
+}
+header .header1 #searchform{
+    width :250px;
+    overflow:hidden;
+    display: flex;
+    align-items: center;
+    
+    border: none;
+}
+#searchform input{
+    padding: 4px;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px 0px 0px 4px;
+    border-width: .5px;
+    
+     
+}
+#searchform button{
+    padding: 4.7px;
+    background: rgb(1, 9, 14);
+    border-radius: 0px 4px 4px 0px;
+    color: rgb(255, 253, 255);
+    border: none;
+    height:25px;
+}
+#searchform button:hover{
+    color: rgb(240, 85, 64);
+    
+}
+#icons i{
+    padding: 7px;
+    color: rgb(10, 10, 10);
+}
+#icons i:hover{
+    color:rgb(240, 85, 64);
+}
+
+
+
+
+.main{
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+
+.nav{
+    background: linear-gradient(to right,#afa9b4,#41b3a3);
+    text-align: center;
+    align-content: center;
+
+}
+.nav a{
+    display: inline-block;
+    padding: 9px;
+    text-decoration: none;
+    font-weight: 600;
+    color: honeydew;
+}
+/* nav a{
+    display: block;
+    color: #fff5ee;
+    text-decoration: none;
+    padding: 14px 16px;
+    float: left;
+    font-weight: 600;
+    font-size: 17px;
+    text-align: center;
+} */
+nav a:hover{
+    color:rgb(240, 85, 64) ;
+}
+
+
+.sticky{
+    position:fixed;
+    top:0;
+    width: 100%;
+
+}
+.sticky + .content {
+    padding-top: 60px;
+}
+#searchform{
+    float:right;
+    margin-right: 0px;
+}
+
+section{
+    padding-top: 10pxs;
+    
+    display: flex;
+    overflow: auto;
+    white-space: nowrap;
+    
+    
+}
+section::-webkit-scrollbar{
+    display:none;
+}
+p{
+    padding-top: 20px;
+
+}
+ .booksec{
+    padding-left: 5px ;
+
+    
+}
+.booksec{
+    padding: 20px;
+    border: 2px rgb(207, 207, 207) solid ;
+}
+.booksec:hover{
+    border:solid 2px #881fdd;
+}
+section img{
+    height: 40vh;
+    
+}
