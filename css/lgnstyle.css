@@ -14,7 +14,7 @@ section{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to bottom,#eca13e,#ceaec3) ;
+    background: linear-gradient(to right,#f0351c,#e474be);
 }
 section .color{
     position:absolute;
@@ -28,13 +28,13 @@ section .color:nth-child(1)
 {
     width: 500px;
     height: 500px;
-    background: #81ceec;
+    background: #e381ec;
     
 }
 section .color:nth-child(2){
     width: 350px;
     height: 350px;
-    background: #6e91eb;
+    background: #f07070;
     left: 25px;
     bottom: -20px;
 
@@ -43,7 +43,7 @@ section .color:nth-child(3)
 {
     width: 300px;
     height: 300px;
-    background:#5ab9ea ;
+    background:#ea5aba ;
     right: 30px;
     bottom: 20px;
 }
@@ -51,7 +51,7 @@ section .color:nth-child(4)
 {
     width: 150px;
     height: 150px;
-    background:#5ab9ea ;
+    background:#d5e5ec ;
     top: -2px;
     left: 30px;
 }
@@ -59,7 +59,7 @@ section .color:nth-child(5)
 {
     width: 150px;
     height: 150px;
-    background:#5ab9ea  ;
+    background:#f4fafd  ;
     top: 30px;
     right: 200px;
     
@@ -179,7 +179,7 @@ section .color:nth-child(5)
 }
 .form .inputbox input[type="submit"]
 {
-    background : linear-gradient(to right,#8860d0,#281be9);
+    background : linear-gradient(to right,#f0351c,#e474be);
     color: #fff;
     cursor: pointer;
     margin-bottom: 20px;
