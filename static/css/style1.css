@@ -162,7 +162,7 @@ nav a:hover{
     
 }
 .swiper-slide img:hover{
-    transform: scale(0.9);
+    transform: scale(0.98);
 }
 .home .row .content h2{
     bottom: 50px;
