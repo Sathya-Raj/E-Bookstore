@@ -23,18 +23,27 @@
         <div class="square"style="--i:2"></div>
         <div class="square"style="--i:2"></div>
         <div class="container">
+
+           
             <div class="form">
                 <h2>Signup</h2>
-                <form>
-                    <div class="inputbox" id="name">
-                        <input type="text" placeholder="Full Name*" required>
-                    </div>
+                <form action = "/Signup.html" method = "POST">
+                    
+                    <div class="inputbox"> 
+                        <label for="username">User Name</label>
+                        <input type="text"  placeholder="Full Name*" required  id="username" name="username"required>
+                    </div> 
+
                     <div class="inputbox" id="e-mail">
-                        <input type="email" placeholder="E-Mail id*" required>
+                        <label for="email">Email Address</label>
+                        <input type="email" placeholder="E-Mail id*" required id="email" name="email" required>
                     </div>
+                    
                     <div class="inputbox" id="Password">
-                        <input type="password" placeholder="Set Password*" required>
+                        <label for="password">Password</label>
+                        <input type="password" placeholder="Set Password*" required id="password" name="password" required>
                     </div>
+
                     <p style="margin-top: 15px;font-weight: 550; color: seashell;">Signup As:</p>
                     <div class="inputbox" id="type" style="display: flex;font-weight: 520; color: seashell; margin-top: 12px; " >
                         
