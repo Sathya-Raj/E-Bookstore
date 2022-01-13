@@ -46,9 +46,13 @@ def Reader():
 def Author():
     return render_template('Author.html')
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('basedashboard.html')
+@app.route('/Rdrdashboard')
+def Rdrdashboard():
+    return render_template('Readerdash.html')
+
+@app.route('/Athrdashboard')
+def Athrdashboard():
+    return render_template('Authordash.html')
  
     
 

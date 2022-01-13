@@ -24,20 +24,15 @@
     <div class="container-fluid display-table">
         <div class="row display-table-row">
             <div class="col-md-2 col-sm-1 hidden-xs display-table-cell v-align box" id="navigation">
-                <div class="logo">
-                    <a hef="Reader"><h3><i class="fa fa-home" aria-hidden="true" style="color: rgb(240, 85, 64);"></i>&nbsp;</h3>
-                        
-                    </a>
+                <div class="logo" style="font-size: 20px; ">
+                    {% block homelogo %}
+                    
+                    {% endblock homelogo %}
                 </div>
                 <div class="navi">
-                    <ul>
-                        <li class="active"><a href="#"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
-                        
-                        <li><a href="#"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
-                        <li><a href="#"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
-                        <li><a href="#"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
-                        <li><a href="#"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
-                    </ul>
+                    {% block navi %}
+                    
+                    {% endblock navi %}
                 </div>
             </div>
             <div class="col-md-10 col-sm-11 display-table-cell v-align">
