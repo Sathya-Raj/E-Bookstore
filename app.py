@@ -30,13 +30,26 @@ def hello_world():
 #         return 'Database Not Connected :('
 
 
-@app.route('/login.html')
+@app.route('/login')
 def login():
     return render_template('login.html')
 
-@app.route('/Signup.html')
+@app.route('/Signup')
 def Signup():
     return render_template('Signup.html')
+    
+@app.route('/Reader')
+def Reader():
+    return render_template('Reader.html')
+
+@app.route('/Author')
+def Author():
+    return render_template('Author.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('basedashboard.html')
+ 
     
 
 if __name__=="__main__":

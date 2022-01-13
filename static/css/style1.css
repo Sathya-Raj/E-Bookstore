@@ -373,8 +373,7 @@ p {
     border:solid 2px #e92f2f;
 }
 section img{
-    height: 40vh;
-    
+    height: 250px;
 }  
 footer{
  display: flex;
