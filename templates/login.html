@@ -25,13 +25,16 @@
         <div class="container">
             <div class="form">
                 <h2>Login </h2>
-                <form>
+                <form action="/login.html" method="post">
+
                     <div class="inputbox" id="e-mail">
-                        <input type="email" placeholder="E-Mail id*" required>
+                        <input type="email" placeholder="E-Mail id*" required id="email" name="email" required>
                     </div>
+
                     <div class="inputbox" id="Password">
-                        <input type="password" placeholder="Password*" required>
+                        <input type="password" placeholder="Password*" required id="password" name="password" required>
                     </div>
+                    
                     <div class="inputbox" id="e-mail">
                         <input type="submit" value="Login">
                     </div>
@@ -40,7 +43,7 @@
 
                     </p>
                     <p class="signup">
-                        Don't have an account ? <a href="/Signup.html">Click here</a>
+                        Don't have an account ? <a href="/Signup.html">Signup</a>
                     </p>
                     <p>
 
