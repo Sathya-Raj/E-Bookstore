@@ -1,15 +1,25 @@
 from os import name
 from re import S
-from flask import Flask,render_template,request,session,redirect
+from flask import Flask,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user
-
+from flask_login import login_user, logout_user, login_manager, LoginManager
+from flask_login import login_required, current_user
 
 local_server = True
 app = Flask (__name__)
 app.secret_key='ebookstore'
+
+#User access
+
+login_manager=LoginManager(app)
+login_manager.login_view='login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/ebookstore'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
@@ -41,8 +51,22 @@ def index():
   
 
 
-@app.route('/login.html')
+@app.route('/login.html',methods=['POST','GET'])
 def login():
+    if request.method == "POST":
+
+        email=request.form.get('email')
+        password=request.form.get('password')
+        user=User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password,password):
+            login_user(user)
+            # flash("Login Success","primary")
+            return redirect(url_for('index'))
+        else:
+            # flash("invalid credentials","danger")
+            return render_template('login.html')   
+    
     return render_template('login.html')
 
 
