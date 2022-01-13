@@ -11,7 +11,7 @@ local_server = True
 app = Flask (__name__)
 app.secret_key='ebookstore'
 
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/ebookstore'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstore'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
@@ -45,12 +45,11 @@ def index():
 def login():
     return render_template('login.html')
 
-<<<<<<< HEAD
-@app.route('/Signup')
-=======
 
-@app.route('/Signup.html', methods = ['POST', 'GET'])
->>>>>>> 8b7623737270a23ea420a3ab56b2e9e83601d3ed
+
+
+
+@app.route('/Signup', methods = ['POST', 'GET'])
 def Signup():
     if request.method == "POST":
         username = request.form.get('username')
@@ -59,11 +58,11 @@ def Signup():
         user = User.query.filter_by(email=email).first()
         if user:
             print("Email already exists")
-            return render_template('/Signup.html')
+            return render_template('/Signup')
         
         encpassword = generate_password_hash(password)
         new_user=db.engine.execute(f"INSERT INTO `user` (`username`,`email`,`password`) VALUES ('{username}','{email}','{encpassword}')")
-        return render_template('login.html')
+        return render_template('login')
 
         
 
