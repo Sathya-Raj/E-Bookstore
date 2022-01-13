@@ -46,18 +46,19 @@ header .header1 #searchform{
     border-radius: 4px 0px 0px 4px;
     border-width: .5px;
     
-     
 }
+
 #searchform button{
     padding: 4.7px;
-    background: rgb(1, 9, 14);
+    background: rgb(255, 255, 255);
     border-radius: 0px 4px 4px 0px;
-    color: rgb(255, 253, 255);
-    border: none;
+    color: rgb(10, 0, 10);
+    border:none;
     height:25px;
-}
- #searchform button:hover{
-    color: rgb(240, 85, 64);
+} 
+ 
+#searchform button:hover{
+    color: rgb(240, 85, 64); */
     
 } 
 #icons i{
