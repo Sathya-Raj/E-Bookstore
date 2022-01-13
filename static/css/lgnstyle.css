@@ -189,7 +189,7 @@ section .color:nth-child(5)
      
 }
 .form .inputbox input[type="submit"]:hover{
-    border: #0738fa solid;
+    border: #ffffff solid;
 }
 .forget,.forget a{
     margin-top :5px;
