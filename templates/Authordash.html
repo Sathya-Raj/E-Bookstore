@@ -5,14 +5,14 @@
 {% endblock homelogo %}
 
 {% block navi %}
- <ul>
-<li class="active"><a href="#"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
-<li><a href="#"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
-<li><a href="#"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
-<li><a href="#"><i class="fas fa-plus-circle"></i><span class="hidden-xs hidden-sm">Add Books</span></a></li>
-<li><a href="#"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
-<li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
-</ul>
+<ul>
+    <li class="active"><a href="/Athrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
+    <li><a href="/Athrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
+    <li ><a href="/Athrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
+    <li><a href="/Athrdashboard/addbooks"><i class="fas fa-plus-circle"></i><span class="hidden-xs hidden-sm">Add Books</span></a></li>
+    <li><a href="/Athrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
+    <li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
+    </ul>
 {% endblock navi %}
 
 {% block dashbody %}

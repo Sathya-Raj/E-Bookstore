@@ -147,10 +147,39 @@ def Author1():
 @app.route('/Rdrdashboard')
 def Rdrdashboard():
     return render_template('Readerdash.html',username=current_user.auth_name)
+ 
+
+@app.route('/Rdrdashboard/cart')
+def rdrcart():
+    return render_template('rdrcart.html',username=current_user.auth_name)
+
+@app.route('/Rdrdashboard/wishlist')
+def rdrwishlist():
+    return render_template('rdrwishlist.html',username=current_user.auth_name)
+
+@app.route('/Rdrdashboard/settings')
+def rdrsettings():
+    return render_template('rdrsettings.html',username=current_user.auth_name)
 
 @app.route('/Athrdashboard')
 def Athrdashboard():
-    return render_template('Authordash.html',username=current_user.username)
+    return render_template('Authordash.html',username=current_user.auth_name)
+
+@app.route('/Athrdashboard/cart')
+def athrcart():
+    return render_template('athrcart.html',username=current_user.auth_name)
+
+@app.route('/Athrdashboard/wishlist')
+def athrwishlist():
+    return render_template('athrwishlist.html',username=current_user.auth_name)
+
+@app.route('/Athrdashboard/addbooks')
+def athraddbooks():
+    return render_template('athraddbooks.html',username=current_user.auth_name)
+
+@app.route('/Athrdashboard/settings')
+def athrsettings():
+    return render_template('athrsettings.html',username=current_user.auth_name)
  
     
 

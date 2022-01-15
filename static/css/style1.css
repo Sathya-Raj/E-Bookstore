@@ -42,19 +42,23 @@ header .header1 #searchform{
 #searchform input{
     padding: 4px;
     height: 100%;
-    width: 100%;
-    border-radius: 4px 4px 4px 4px;
-    border-width: .5px;
+    width: 90%;
+    border-radius: 4px 0px  0px 4px;
+    border-right: none;
+    border-width:  .5px;
     
 }
 
 #searchform button{
-    padding: 4.7px;
+    padding: 4px;
+    
     background: rgb(255, 255, 255);
     border-radius: 0px 4px 4px 0px;
     color: rgb(10, 0, 10);
-    border:none;
-    height:25px;
+    border-left:none;
+    height: 100%;
+    
+    border-width: .5px;
 } 
  
 #searchform button:hover{
@@ -86,7 +90,7 @@ header .header1 #searchform{
     justify-content: center;
     overflow: hidden;
     background:  linear-gradient(to right,#f0351c,#e474be);
-    gap: 3rem;
+    flex-wrap: wrap;
     
   
     
@@ -96,10 +100,10 @@ header .header1 #searchform{
   .navbar a {
     float: left;
     font-size: 19px;
-    font-weight: 470;
+    font-weight: 500;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+     padding: 10px ; 
     text-decoration: none;
   }
   
@@ -115,7 +119,7 @@ header .header1 #searchform{
     border: none;
     outline: none;
     color: white;
-    padding: 14px 16px;
+    padding: 10px;
     background-color: inherit;
     font-family: inherit; /* Important for vertical align on mobile phones */
     margin: 0; /* Important for vertical align on mobile phones */
