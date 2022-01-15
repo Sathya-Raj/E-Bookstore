@@ -146,11 +146,11 @@ def Author1():
 
 @app.route('/Rdrdashboard')
 def Rdrdashboard():
-    return render_template('Readerdash.html')
+    return render_template('Readerdash.html',username=current_user.auth_name)
 
 @app.route('/Athrdashboard')
 def Athrdashboard():
-    return render_template('Authordash.html')
+    return render_template('Authordash.html',username=current_user.username)
  
     
 
