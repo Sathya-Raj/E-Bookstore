@@ -122,18 +122,6 @@ li,ul{
     width: 100%;
 }
 
-.user input {
-    background: rgba(0, 0, 0, 0) url("../images/user.png") no-repeat scroll 7px 12px;
-}
-
-.pass input {
-    background: rgba(0, 0, 0, 0) url("../images/password.png") no-repeat scroll 7px 12px;
-}
-
-.mail input {
-    background: rgba(0, 0, 0, 0) url("../images/mail.png") no-repeat scroll 4px 12px;
-}
-
 .login-signup .tab-content {
     background: #ffffff none repeat scroll 0 0;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
@@ -350,6 +338,7 @@ header {
 
 .logo {
     text-align: center;
+    width: 200px; 
 }
 
 .navi a {
@@ -369,6 +358,7 @@ header {
 }
 
 .navi .active a {
+
     background: #000000;
     border-left: 5px solid rgb(240, 85, 64);
     padding-left: 15px;
@@ -416,7 +406,7 @@ header {
 }
 
 .user-dashboard h1 {
-    color: #0e1a35;
+    color: #161416;
     font-size: 30px;
     font-weight: 500;
     margin: 0;

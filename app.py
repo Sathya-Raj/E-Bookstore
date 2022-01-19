@@ -1,5 +1,7 @@
 from enum import unique
+from http.client import REQUEST_URI_TOO_LONG
 from os import name
+from pydoc import doc
 from re import S
 from flask import Flask,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -7,6 +9,8 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_manager, LoginManager
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+import os
 
 local_server = True
 app = Flask (__name__)
@@ -163,7 +167,7 @@ def rdrsettings():
 
 @app.route('/Athrdashboard')
 def Athrdashboard():
-    return render_template('Authordash.html',username=current_user.auth_name)
+    return render_template('Authordash.html')
 
 @app.route('/Athrdashboard/cart')
 def athrcart():
@@ -173,9 +177,50 @@ def athrcart():
 def athrwishlist():
     return render_template('athrwishlist.html',username=current_user.auth_name)
 
-@app.route('/Athrdashboard/addbooks')
+
+IMGUPLOAD_FOLDER = 'static/css/images/books'
+PDFUPLOAD_FOLDER = 'BOOKS'
+ALLOWED_IMGEXTENSIONS = [ 'png', 'jpg', 'jpeg']
+ALLOWED_DOCEXTENSIONS =['pdf']
+app.config['IMGUPLOAD_FOLDER']=IMGUPLOAD_FOLDER
+app.config['PDFUPLOAD_FOLDER']=PDFUPLOAD_FOLDER
+def allowed_imgfile(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_IMGEXTENSIONS
+
+
+def allowed_docfile(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_DOCEXTENSIONS
+
+@app.route('/Athrdashboard/addbooks',methods = ['POST', 'GET'])
 def athraddbooks():
-    return render_template('athraddbooks.html',username=current_user.auth_name)
+    if request.method=="POST":
+        Booktitle=request.form.get('Booktitle')
+        Description=request.form.get('Description')
+        Price=request.form.get('Price')
+        print(Booktitle,Description,Price)
+        file=request.files['image']           #Taking image input
+        print(file.filename)
+        if file and allowed_imgfile(file.filename):          #validation
+            print("Valid")
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], filename))
+        else:
+            print("invalid")
+            #flash msg("Invalid image extension supported extensions are:"+ALLOWEDIMGEXTENSIONS)
+            return render_template('athraddbooks.html',)    
+        doc = request.files['pdffile']                 #taking doc input
+        print(doc.filename)
+        if doc and allowed_docfile(doc.filename):
+            filename = secure_filename(doc.filename)
+            doc.save(os.path.join(app.config['PDFUPLOAD_FOLDER'], filename))
+            return redirect (url_for("Author1"))
+        else:
+            #flash msg("Invalid doc extension supported extensions are:"+ALLOWEDDOCEXTENSIONS)
+            return render_template('athraddbooks.html',)
+
+   
+    else:
+     return render_template('athraddbooks.html',)
 
 @app.route('/Athrdashboard/settings')
 def athrsettings():

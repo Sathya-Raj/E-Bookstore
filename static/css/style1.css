@@ -8,6 +8,7 @@ html{
     scroll-padding-top:5rem;
     scroll-behavior: smooth;
     font-size: larger;
+    zoom : 110%;
 }
 html::-webkit-scrollbar{
     display: none;
@@ -443,4 +444,8 @@ footer a{
     text-decoration: none;
     color: #fff;
     font-weight: 400;
+}
+@media only screen and( max-width:715px){
+    
+    
 }
