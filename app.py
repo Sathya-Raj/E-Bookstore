@@ -130,8 +130,6 @@ def Signup():
             encpassword = generate_password_hash(password)
             new_user=db.engine.execute(f"INSERT INTO `author` (`auth_name`,`auth_email`,`auth_pass`) VALUES ('{username}','{email}','{encpassword}')")
             return render_template('loginathr.html')
-
-
         
 
     return render_template('Signup.html')
