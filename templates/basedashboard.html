@@ -9,7 +9,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='fontawesome/css/all.min.css') }}">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
     $(document).ready(function(){
@@ -56,12 +56,12 @@
                     </header>
                 </div>
                 <div class="user-dashboard">
-                    <h1>Hello, JS</h1>
-                    <div class="row">
-                        <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
-
+                    {% block dashbody %}
+                    
+                    {% endblock dashbody %}
                             
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -71,30 +71,7 @@
 
 
 
-    <!-- Modal -->
-    <div id="add_project" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header login-header">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h4 class="modal-title">Add Project</h4>
-                </div>
-                <div class="modal-body">
-                            <input type="text" placeholder="Project Title" name="name">
-                            <input type="text" placeholder="Post of Post" name="mail">
-                            <input type="text" placeholder="Author" name="passsword">
-                            <textarea placeholder="Desicrption"></textarea>
-                    </div>
-                <div class="modal-footer">
-                    <button type="button" class="cancel" data-dismiss="modal">Close</button>
-                    <button type="button" class="add-project" data-dismiss="modal">Save</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    
 
 </body>
 </html>

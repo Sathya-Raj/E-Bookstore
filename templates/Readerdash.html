@@ -6,10 +6,18 @@
 
 {% block navi %}
  <ul>
-<li class="active"><a href="#"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
-<li><a href="#"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
-<li><a href="#"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
-<li><a href="#"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
-<li><a href="#"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
+<li class="active"><a href="/Rdrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
+<li><a href="/Rdrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
+<li><a href="/Rdrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
+<li><a href="/Rdrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
+<li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
 </ul>
 {% endblock navi %}
+
+{% block dashbody %}
+<h1>Hello, {{username}}</h1>
+<div class="row">
+    <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
+    
+    </div>
+{% endblock dashbody %}

@@ -1,0 +1,23 @@
+{% extends 'basedashboard.html' %}
+
+{% block homelogo %}
+<a hef="Reader"><a href="Author" style="color: rgb(240, 85, 64); "><h3><i class="fas fa-home"></i></h3></a></a>
+{% endblock homelogo %}
+
+{% block navi %}
+<ul>
+    <li ><a href="/Rdrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
+    <li class="active"><a href="/Rdrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
+    <li><a href="/Rdrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
+    <li><a href="/Rdrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Setting</span></a></li>
+    <li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
+    </ul>
+{% endblock navi %}
+
+{% block dashbody %}
+<h1>Hello, {{username}}</h1>
+<div class="row">
+    <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
+    
+    </div>
+{% endblock dashbody %}
