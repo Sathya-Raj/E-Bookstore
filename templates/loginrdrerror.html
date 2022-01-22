@@ -4,18 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
+    <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/lgnstyle.css') }}">
 </head>
 <body>
+
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>  
+            <strong>Invalid Credentials!</strong> Username or password is incorrect.
+        </div>
+
     <section>
         <div class="color"></div>
         <div class="color"></div>
         <div class="color"></div>
         <div class="color"></div>
         <div class="color"></div>
-        
-        
+
         <div class="box">
             <div class="square" style="--i:0"></div>
         <div class="square"style="--i:1"></div>
@@ -23,36 +28,27 @@
         <div class="square"style="--i:2"></div>
         <div class="square"style="--i:2"></div>
         <div class="container">
-
-           
             <div class="form">
-                <h2>Signup</h2>
-                <form action = "/Signup" method = "POST">
-                    
-                    <div class="inputbox"> 
-                        <input type="text"  placeholder="Full Name*" required  id="username" name="username"required>
-                    </div> 
+                <h2>Login </h2>
+                <form action="/loginathr" method="post">
 
                     <div class="inputbox" id="e-mail">
                         <input type="email" placeholder="E-Mail id*" required id="email" name="email" required>
                     </div>
-                    
-                    <div class="inputbox" id="Password">
-                        <input type="password" placeholder="Set Password*" required id="password" name="password" required>
-                    </div>
 
-                    <p style="margin-top: 15px;font-weight: 550; color: seashell;">Signup As:</p>
-                    <div class="inputbox" id="type" style="display: flex;font-weight: 520; color: seashell; margin-top: 12px; " >
-                        
-                        Author :<input type="radio" name="type" id="author" value="author" style="width: 80px; height: 15px; margin-left: 8px;margin-right: 8px;">Reader :<input type="radio" name="type" id="reader" value="reader" required style="width: 80px; height: 15px; margin-left: 8px;margin-right: 8px;">
-                        
-                    </div>
-                    <div class="inputbox" id="e-mail">
-                       <input type="submit" value="Signup">
+                    <div class="inputbox" id="Password">
+                        <input type="password" placeholder="Password*" required id="password" name="password" required>
                     </div>
                     
+                    <div class="inputbox" id="e-mail">
+                        <input type="submit" value="Login">
+                    </div>
+                    <p class="forget">
+                        Forgot Password ? <a href="#">Click here</a>
+
+                    </p>
                     <p class="signup">
-                        Already a user? Login as <a href="/loginathr">Author</a> or <a href="/loginrdr">Reader</a>
+                        Don't have an account ? <a href="/Signup">Signup</a>
                     </p>
                     <p>
 

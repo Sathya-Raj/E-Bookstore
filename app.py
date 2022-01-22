@@ -84,7 +84,7 @@ def loginathr():
             return redirect(url_for('Author1'))
         else:
             # flash("invalid credentials","danger")
-            return render_template('loginathr.html')   
+            return render_template('loginathrerror.html')   
     
     return render_template('loginathr.html')
 
@@ -103,11 +103,9 @@ def loginrdr():
         else:
             print("Invalid!!")
             # flash("invalid credentials","danger")
-            return render_template('loginrdr.html')   
+            return render_template('loginrdrerror.html')   
     
     return render_template('loginrdr.html')
-
-
 
 
 
@@ -134,8 +132,6 @@ def Signup():
             encpassword = generate_password_hash(password)
             new_user=db.engine.execute(f"INSERT INTO `author` (`auth_name`,`auth_email`,`auth_pass`) VALUES ('{username}','{email}','{encpassword}')")
             return render_template('loginathr.html')
-
-
         
 
     return render_template('Signup.html')
