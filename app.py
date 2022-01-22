@@ -84,7 +84,7 @@ def loginathr():
             return redirect(url_for('Author1'))
         else:
             # flash("invalid credentials","danger")
-            return render_template('loginathr.html')   
+            return render_template('loginathrerror.html')   
     
     return render_template('loginathr.html')
 
@@ -103,11 +103,9 @@ def loginrdr():
         else:
             print("Invalid!!")
             # flash("invalid credentials","danger")
-            return render_template('loginrdr.html')   
+            return render_template('loginrdrerror.html')   
     
     return render_template('loginrdr.html')
-
-
 
 
 
