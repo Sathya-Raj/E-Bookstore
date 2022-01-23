@@ -1,3 +1,4 @@
+
 *{
     box-sizing:border-box;
     margin: 0px;
@@ -296,39 +297,51 @@ header .header1 #searchform{
     padding: 3px;
     padding-left:5px;
     background: linear-gradient(to right,#f0351c,#e474be); 
-
+    text-align: center;
 }
  .main{
-    text-align: center;
+  
     padding-top: 10px;
 }
 
-.booksec{
+
+.main .bookrows .booksec {
+    display: grid;
+    grid-template-columns:[first]220px[line2]auto  ;
+    padding: 20px ;
+    margin: 5px;
+    border: solid rgb(240, 200, 200);
+    min-height: 400px;
     
+}
+.main .bookrows .booksec:hover{
+    border: solid rgb(240, 85, 64);
+}
+.main .bookrows .booksec .book_image{
+    
+}
+  .main .bookrows .description{
     display: flex;
-    flex-direction: row;
-    align-items: center;  
-    justify-content: space-between; 
-    gap: 20px; 
-    line-height: 25px;
-}
-.booksec .description{
-    text-align: left;
-    margin-left: 10px;
-}
-.booksec .description h4,
-.booksec .description h5{
-    font-size: 18px;
-  
-}
-.stage {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+     padding: 10px;
+} 
+.main .bookrows .description h4,
+.main .bookrows .description h5{
+    font-size: 21px;
     
-    
-    
-  }
+} 
+.main .bookrows .description .price{
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 19px;
+}
+.main .bookrows .description .desc{
+    float: left;
+}
+
+
+
   
  .btn {
     margin-right: 12px;
@@ -402,34 +415,13 @@ header .header1 #searchform{
       background-position: 0 0;
     }
   }
-/* .booksec .description .About{
-    color: rgb(248, 66, 42);
-}
-.booksec .description .About button{
-     padding: 7px;
-     margin-right: 10px;
-    background: #f0351c;
-    border-radius: 20px;
-} */
+ 
 
-p {
-    padding-top: 20px;
 
-}
- .booksec{
-    padding-left: 5px ;
 
-    
-}
-.booksec{
-    padding: 20px;
-    border: 2px rgb(207, 207, 207) solid ;
-}
-.booksec:hover{
-    border:solid 2px #e92f2f;
-}
+
 section img{
-    height: 250px;
+    height: 260px;
 }  
 footer{
  display: flex;

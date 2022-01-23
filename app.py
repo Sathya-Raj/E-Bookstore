@@ -1,3 +1,4 @@
+
 from enum import unique
 from http.client import REQUEST_URI_TOO_LONG
 from os import name
@@ -22,10 +23,19 @@ app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstor
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
+usertype=[]
+
 @login_manager.user_loader
 def load_user(user_id):
-    return Author.query.get(int(user_id))
+    if 'author'in usertype:
+        print(usertype[0])
+        return Author.query.get(int(user_id))
+    else :
+        return Reader.query.get(int(user_id))
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect(url_for('Signup'))
 
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstore'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
@@ -45,28 +55,43 @@ db=SQLAlchemy(app)
 #     password = db.Column(db.String(1000))
 
 class Author(UserMixin,db.Model):
+    __tablename__='author'
     id = db.Column(db.Integer,primary_key=True)
     auth_name = db.Column(db.String(50),unique=True)
     auth_email = db.Column(db.String(50))
     auth_pass = db.Column(db.String(1000))
 
 class Reader(UserMixin,db.Model):
+    __tablename__='reader'
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(50),unique=True)
     email = db.Column(db.String(50))
     password = db.Column(db.String(1000))
 
+class Book(UserMixin,db.Model):
+    __tablename__='book'
+    book_id = db.Column(db.Integer,primary_key=True)
+    book_title = db.Column(db.String(50))
+    book_desc = db.Column(db.String(50))
+    price=db.Column(db.String(10))
+    book_img = db.Column(db.String(1000))
+    doc_name = db.Column(db.String(1000))
+    auth_id = db.Column(db.Integer, db.ForeignKey('author.id'),
+        nullable=False)
+    author = db.relationship("Author",backref= db.backref("author",uselist=False))
+
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',newreleases=Book.query.all())
 
-  
+
 
 @app.route('/logout')
 @login_required
 def logout():
+    usertype=[]
     logout_user()
     return redirect(url_for('index'))
 
@@ -79,6 +104,7 @@ def loginathr():
         user=Author.query.filter_by(auth_email=email).first()
 
         if user and check_password_hash(user.auth_pass,password):
+            usertype.append('author')
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Author1'))
@@ -97,6 +123,7 @@ def loginrdr():
         user=Reader.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password,password):
+            usertype.append('reader')
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Reader1'))
@@ -133,6 +160,8 @@ def Signup():
                 return render_template('Signup.html')
             encpassword = generate_password_hash(password)
             new_user=db.engine.execute(f"INSERT INTO `author` (`auth_name`,`auth_email`,`auth_pass`) VALUES ('{username}','{email}','{encpassword}')")
+
+            
             return render_template('loginathr.html')
 
 
@@ -141,29 +170,31 @@ def Signup():
     return render_template('Signup.html')
     
 @app.route('/Reader')
+@login_required
 def Reader1():
-    return render_template('Reader.html')
+    return render_template('Reader.html',newreleases=Book.query.all())
 
 @app.route('/Author')
+@login_required
 def Author1():
-    return render_template('Author.html')
+    return render_template('Author.html',newreleases=Book.query.all())
 
 @app.route('/Rdrdashboard')
 def Rdrdashboard():
-    return render_template('Readerdash.html',username=current_user.auth_name)
+    return render_template('Readerdash.html',username=current_user.username)
  
 
 @app.route('/Rdrdashboard/cart')
 def rdrcart():
-    return render_template('rdrcart.html',username=current_user.auth_name)
+    return render_template('rdrcart.html',username=current_user.username)
 
 @app.route('/Rdrdashboard/wishlist')
 def rdrwishlist():
-    return render_template('rdrwishlist.html',username=current_user.auth_name)
+    return render_template('rdrwishlist.html',username=current_user.username)
 
 @app.route('/Rdrdashboard/settings')
 def rdrsettings():
-    return render_template('rdrsettings.html',username=current_user.auth_name)
+    return render_template('rdrsettings.html',username=current_user.username)
 
 @app.route('/Athrdashboard')
 def Athrdashboard():
@@ -171,7 +202,7 @@ def Athrdashboard():
 
 @app.route('/Athrdashboard/cart')
 def athrcart():
-    return render_template('athrcart.html',username=current_user.auth_name)
+    return render_template('athrcart.html')
 
 @app.route('/Athrdashboard/wishlist')
 def athrwishlist():
@@ -197,13 +228,14 @@ def athraddbooks():
         Booktitle=request.form.get('Booktitle')
         Description=request.form.get('Description')
         Price=request.form.get('Price')
-        print(Booktitle,Description,Price)
+        if Price=='Paid':
+            Price=request.form.get('Amount')
         file=request.files['image']           #Taking image input
         print(file.filename)
         if file and allowed_imgfile(file.filename):          #validation
             print("Valid")
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], filename))
+            imgfilename = Booktitle+secure_filename(file.filename)
+            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
         else:
             print("invalid")
             #flash msg("Invalid image extension supported extensions are:"+ALLOWEDIMGEXTENSIONS)
@@ -211,12 +243,16 @@ def athraddbooks():
         doc = request.files['pdffile']                 #taking doc input
         print(doc.filename)
         if doc and allowed_docfile(doc.filename):
-            filename = secure_filename(doc.filename)
-            doc.save(os.path.join(app.config['PDFUPLOAD_FOLDER'], filename))
-            return redirect (url_for("Author1"))
+            docfilename = Booktitle+secure_filename(doc.filename)
+            doc.save(os.path.join(app.config['PDFUPLOAD_FOLDER'], docfilename))
+            userid=current_user.id
+            db.engine.execute(f"INSERT INTO `book` ( `book_title`, `book_desc`,`price`, `book_img`, `doc_name`,`auth_id`) VALUES ( '{Booktitle}', '{Description}', '{Price}', '{imgfilename}', '{docfilename}','{userid}');")
+            return redirect(url_for("Author1"))
         else:
             #flash msg("Invalid doc extension supported extensions are:"+ALLOWEDDOCEXTENSIONS)
-            return render_template('athraddbooks.html',)
+            
+            return render_template('athraddbooks.html')
+        
 
    
     else:
