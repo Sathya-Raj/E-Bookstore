@@ -3,7 +3,7 @@ from http.client import REQUEST_URI_TOO_LONG
 from os import name
 from pydoc import doc
 from re import S
-from flask import Flask,render_template,request,session,redirect, url_for
+from flask import Flask, flash,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -25,6 +25,7 @@ login_manager.login_view='login'
 @login_manager.user_loader
 def load_user(user_id):
     return Author.query.get(int(user_id))
+
 
 
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstore'
@@ -80,11 +81,11 @@ def loginathr():
 
         if user and check_password_hash(user.auth_pass,password):
             login_user(user)
-            # flash("Login Success","primary")
+            flash("Login Success","primary")
             return redirect(url_for('Author1'))
         else:
-            # flash("invalid credentials","danger")
-            return render_template('loginathrerror.html')   
+            flash("Invalid credentials!","danger")
+            return render_template('loginathr.html')   
     
     return render_template('loginathr.html')
 
@@ -98,12 +99,12 @@ def loginrdr():
 
         if user and check_password_hash(user.password,password):
             login_user(user)
-            # flash("Login Success","primary")
+            flash("Login Success","primary")
             return redirect(url_for('Reader1'))
         else:
             print("Invalid!!")
-            # flash("invalid credentials","danger")
-            return render_template('loginrdrerror.html')   
+            flash("Invalid credentials!","danger")
+            return render_template('loginrdr.html')   
     
     return render_template('loginrdr.html')
 
@@ -120,7 +121,8 @@ def Signup():
             user = Reader.query.filter_by(email=email).first()
             if user:
                 print("Email already exists")
-                return render_template('Signup.html')
+                flash("Email Already exists!","warning")
+            return render_template('Signup.html')
             encpassword = generate_password_hash(password)
             new_user=db.engine.execute(f"INSERT INTO `reader` (`username`,`email`,`password`) VALUES ('{username}','{email}','{encpassword}')")
             return render_template('loginrdr.html')
@@ -128,7 +130,8 @@ def Signup():
             user = Author.query.filter_by(auth_email=email).first()
             if user:
                 print("Email already exists")
-                return render_template('Signup.html')
+                flash("Email already exists!","warning")
+            return render_template('Signup.html')
             encpassword = generate_password_hash(password)
             new_user=db.engine.execute(f"INSERT INTO `author` (`auth_name`,`auth_email`,`auth_pass`) VALUES ('{username}','{email}','{encpassword}')")
             return render_template('loginathr.html')
