@@ -23,11 +23,12 @@ app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstor
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
-usertype=[]
+usertype=''
 
 @login_manager.user_loader
 def load_user(user_id):
-    if 'author'in usertype:
+    global usertype
+    if  usertype=='author':
         print(usertype[0])
         return Author.query.get(int(user_id))
     else :
@@ -91,48 +92,51 @@ def index():
 @app.route('/logout')
 @login_required
 def logout():
-    usertype=[]
+    global usertype
+    usertype=''
     logout_user()
     return redirect(url_for('index'))
 
 @app.route('/loginathr',methods=['POST','GET'])
 def loginathr():
     if request.method == "POST":
-
+        global usertype
         email=request.form.get('email')
         password=request.form.get('password')
         user=Author.query.filter_by(auth_email=email).first()
 
         if user and check_password_hash(user.auth_pass,password):
-            usertype.append('author')
+            usertype='author'
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Author1'))
         else:
             # flash("invalid credentials","danger")
-            return render_template('loginathrerror.html')   
+            return render_template('loginathr.html')   
     
     return render_template('loginathr.html')
 
 @app.route('/loginrdr',methods=['POST','GET'])
 def loginrdr():
     if request.method == "POST":
-
+        global usertype
         email=request.form.get('email')
         password=request.form.get('password')
         user=Reader.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password,password):
-            usertype.append('reader')
+            usertype='reader'
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Reader1'))
         else:
             print("Invalid!!")
             # flash("invalid credentials","danger")
-            return render_template('loginrdrerror.html')   
+            return render_template('loginrdr.html')   
     
     return render_template('loginrdr.html')
+
+
 
 
 
@@ -161,6 +165,8 @@ def Signup():
 
             
             return render_template('loginathr.html')
+
+
         
 
     return render_template('Signup.html')
