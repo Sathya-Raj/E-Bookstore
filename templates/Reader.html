@@ -21,3 +21,31 @@ E-Book
 <a href="#">Wishlist</a>&nbsp;&nbsp;
 </div>
 {% endblock nav %}
+
+{% block newreleases %}
+{% for items in newreleases %}
+<div class="booksec">
+ 
+<div class="book_image"> 
+  <img src="{{ url_for('static', filename='css/images/books/')}}{{items.book_img}}" alt="book img"class="bookimg"  width="175px">
+</div>
+<div class="description">
+  
+  
+    <h4>{{items.book_title}}</h4>
+    <h5>by:   {{items.author.auth_name}} </h5>
+    <p style="font-weight: 500;">Description :</p>
+    <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div>
+    <p class="price"> PRICE (inr.) : {{items.price}} </p>
+
+  <div class="stage" >
+  <button class="btn">Buy Now</button>
+  <button class="btn">Add to Wishlist</button>
+  </div>
+</div>
+
+  
+</div>
+{% endfor %}
+
+{% endblock newreleases %}
