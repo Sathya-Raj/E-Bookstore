@@ -10,9 +10,11 @@ body{
 }
 /* The alert message box */
 .alert {
-    padding: 20px;
+    padding: 10px;
     background-color: #cc00005d; /* Red */
+    margin-top: 15px ;
 }
+.alert.success {background-color: #99ffda9f;}
     
   /* The close button */
   .closebtn {

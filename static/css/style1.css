@@ -41,6 +41,7 @@ header .header1 #searchform{
     
     border: none;
 }
+
 #searchform input{
     padding: 4px;
     height: 100%;

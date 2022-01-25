@@ -25,6 +25,27 @@
         <div class="container">
             <div class="form">
                 <h2>Login </h2>
+
+                <div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                          {% for category, message in messages %}
+                              {% if category == "danger" %}
+                                <div class="alert danger">
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>  
+                                <strong>Invalid Credentials!</strong>
+                                 </div>
+                              {% else %}
+                                <div class="alert success">
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>  
+                                <strong>Signup Succesful!</strong> Please Login.
+                                </div>
+                              {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                  </div>
+
                 <form action="/loginathr" method="post">
 
                     <div class="inputbox" id="e-mail">
@@ -48,6 +69,7 @@
                     <p>
 
                     </p>
+
                     
                  </form>
             </div>
