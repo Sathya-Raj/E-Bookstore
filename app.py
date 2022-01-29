@@ -58,7 +58,7 @@ db=SQLAlchemy(app)
 
 class Author(UserMixin,db.Model):
     __tablename__='author'
-    auth_id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer,primary_key=True)
     auth_name = db.Column(db.String(50),unique=True)
     auth_email = db.Column(db.String(50))
     auth_pass = db.Column(db.String(1000))
@@ -151,7 +151,6 @@ def Signup():
         if type =='reader':
             user = Reader.query.filter_by(email=email).first()
             if user:
-                print("Email already exists")
                 flash("Email Already exists!","warning")
                 return render_template('Signup.html')
             else:
@@ -163,7 +162,6 @@ def Signup():
         else :
             user = Author.query.filter_by(auth_email=email).first()
             if user:
-                print("Email already exists")
                 flash("Email already exists!","warning")
                 return render_template('Signup.html')
             else:
@@ -225,7 +223,6 @@ app.config['PDFUPLOAD_FOLDER']=PDFUPLOAD_FOLDER
 def allowed_imgfile(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_IMGEXTENSIONS
 
-
 def allowed_docfile(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_DOCEXTENSIONS
 
@@ -242,10 +239,9 @@ def athraddbooks():
         if file and allowed_imgfile(file.filename):          #validation
             print("Valid")
             imgfilename = Booktitle+secure_filename(file.filename)
-            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
         else:
             print("invalid")
-            #flash msg("Invalid image extension supported extensions are:"+ALLOWEDIMGEXTENSIONS)
+            flash("Invalid image type!!, supported extensions are : "+'  '.join(ALLOWED_IMGEXTENSIONS),'danger')
             return render_template('athraddbooks.html',)    
         doc = request.files['pdffile']                 #taking doc input
         print(doc.filename)
@@ -253,10 +249,11 @@ def athraddbooks():
             docfilename = Booktitle+secure_filename(doc.filename)
             doc.save(os.path.join(app.config['PDFUPLOAD_FOLDER'], docfilename))
             userid=current_user.id
+            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
             db.engine.execute(f"INSERT INTO `book` ( `book_title`, `book_desc`,`price`, `book_img`, `doc_name`,`auth_id`) VALUES ( '{Booktitle}', '{Description}', '{Price}', '{imgfilename}', '{docfilename}','{userid}');")
             return redirect(url_for("Author1"))
         else:
-            #flash msg("Invalid doc extension supported extensions are:"+ALLOWEDDOCEXTENSIONS)
+            flash("Invalid document type!!, supported extensions are : "+ '  '.join(ALLOWED_DOCEXTENSIONS),'danger')
             
             return render_template('athraddbooks.html')
         
