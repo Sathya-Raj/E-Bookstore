@@ -58,7 +58,7 @@ db=SQLAlchemy(app)
 
 class Author(UserMixin,db.Model):
     __tablename__='author'
-    id = db.Column(db.Integer,primary_key=True)
+    auth_id = db.Column(db.Integer,primary_key=True)
     auth_name = db.Column(db.String(50),unique=True)
     auth_email = db.Column(db.String(50))
     auth_pass = db.Column(db.String(1000))
@@ -112,11 +112,7 @@ def loginathr():
             #flash("Login Success","primary")
             return redirect(url_for('Author1'))
         else:
-<<<<<<< HEAD
-            # flash("invalid credentials","danger")
-=======
             flash("Invalid credentials!","danger")
->>>>>>> 878f847df4235108ff28b6f0e01078053be2f558
             return render_template('loginathr.html')   
     
     return render_template('loginathr.html')
@@ -136,11 +132,7 @@ def loginrdr():
             return redirect(url_for('Reader1'))
         else:
             print("Invalid!!")
-<<<<<<< HEAD
-            # flash("invalid credentials","danger")
-=======
             flash("Invalid credentials!","danger")
->>>>>>> 878f847df4235108ff28b6f0e01078053be2f558
             return render_template('loginrdr.html')   
     
     return render_template('loginrdr.html')
@@ -180,13 +172,6 @@ def Signup():
                 flash("Signup Successful","success")
                 return render_template('loginathr.html')
 
-<<<<<<< HEAD
-            
-            return render_template('loginathr.html')
-
-
-=======
->>>>>>> 878f847df4235108ff28b6f0e01078053be2f558
         
 
     return render_template('Signup.html')
@@ -247,7 +232,7 @@ def allowed_docfile(filename):
 @app.route('/Athrdashboard/addbooks',methods = ['POST', 'GET'])
 def athraddbooks():
     if request.method=="POST":
-        Booktitle=request.form.get('Booktitle')
+        Booktitle=request.form.get('Booktitle').upper()
         Description=request.form.get('Description')
         Price=request.form.get('Price')
         if Price=='Paid':
