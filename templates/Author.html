@@ -24,28 +24,43 @@ E-Book
 {% endblock nav %}
 
 {% block newreleases %}
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+
+    <div class="alert-{{ category }} alert-dismissible " role="alert" style="padding-top: 5px;padding-bottom: 5px;">
+        <strong style=" color: rgb(223, 19, 19); ">{{ message }}</strong>
+        <button type="button" class="close bg danger" data-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';"style="border:none; color:red;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+  {% endfor %}
+  {% endif %}
+{% endwith %}
 {% for items in newreleases %}
 <div class="booksec">
- 
-<div class="book_image"> 
-  <img src="{{ url_for('static', filename='css/images/books/')}}{{items.book_img}}" alt="book img"class="bookimg"  width="175px">
-</div>
-<div class="description">
-  
-  
+  <div class="book_image"> 
+    <img src="{{ url_for('static', filename='css/images/books/')}}{{items.book_img}}" alt="book img"class="bookimg"  width="175px">
+  </div>
+  <div class="description">      
     <h4>{{items.book_title}}</h4>
-    <h5>by:   {{items.author.auth_name}} </h5>
+    <h5>by:   {{items.author.auth_name}} </h5><hr>
     <p style="font-weight: 500;">Description :</p>
-    <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div>
+    <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div><hr>
     <p class="price"> PRICE (inr.) : {{items.price}} </p>
 
   <div class="stage" >
-  <button class="btn">Buy Now</button>
-  <button class="btn">Add to Wishlist</button>
+    <form action="">
+      <input type="hidden" name='book_id' value="{{ items.book_id }}">
+      <button class="btn">Buy Now</button>
+    </form><br>
+    <form action="/addcart" method = "POST">
+      <input type="hidden" name='book_id' value="{{ items.book_id }}">
+      <button class="btn" type="submit">Add to cart</button>
+    </form>
   </div>
-</div>
-
-  
+  </div>
 </div>
 {% endfor %}
 

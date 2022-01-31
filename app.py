@@ -7,6 +7,7 @@ from re import S
 from flask import Flask, flash,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from markupsafe import re
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_manager, LoginManager
 from flask_login import login_required, current_user
@@ -23,13 +24,11 @@ app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstor
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
-usertype=''
+
 
 @login_manager.user_loader
 def load_user(user_id):
-    global usertype
-    if  usertype=='author':
-        print(usertype[0])
+    if  session["usertype"]=='author':
         return Author.query.get(int(user_id))
     else :
         return Reader.query.get(int(user_id))
@@ -94,7 +93,8 @@ def index():
 @login_required
 def logout():
     global usertype
-    usertype=''
+    session.pop("usertype",None)
+    session.pop('shop_cart',None)
     logout_user()
     return redirect(url_for('index'))
 
@@ -107,7 +107,7 @@ def loginathr():
         user=Author.query.filter_by(auth_email=email).first()
 
         if user and check_password_hash(user.auth_pass,password):
-            usertype='author'
+            session["usertype"]='author'
             login_user(user)
             #flash("Login Success","primary")
             return redirect(url_for('Author1'))
@@ -126,7 +126,7 @@ def loginrdr():
         user=Reader.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password,password):
-            usertype='reader'
+            session["usertype"]='reader'
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Reader1'))
@@ -173,6 +173,37 @@ def Signup():
         
 
     return render_template('Signup.html')
+
+def array_merge( first_array , second_array ):
+    if isinstance( first_array , list ) and isinstance( second_array , list ):
+     return first_array + second_array
+    elif isinstance( first_array , dict ) and isinstance( second_array , dict):
+        return dict( list( first_array.items() ) + list( second_array.items()))
+
+@app.route('/addcart',methods=['POST'])
+def AddCart():
+    try:
+        book_id1=request.form.get('book_id')
+        book=Book.query.filter_by(book_id=book_id1).first()
+        if book and request.method=='POST':
+            Dic_items={book_id1:{'book_title':book.book_title,'author_name':book.author.auth_name,'book_image':book.book_img,'doc_name':book.doc_name,'price':book.price}}
+            
+            if 'shop_cart'in session:
+                print(session['shop_cart'])
+                if book_id1 in session['shop_cart']:
+                    print(session['shop_cart'])
+                    flash('Product already in cart!!')
+                else :
+                    session['shop_cart']=array_merge(session['shop_cart'],Dic_items)
+                    print(session['shop_cart'])
+            else :
+                session['shop_cart']=Dic_items
+                return redirect(request.referrer)
+        
+    except Exception as e :
+        print(e)
+    finally:
+        return redirect(request.referrer)
     
 @app.route('/Reader')
 @login_required
