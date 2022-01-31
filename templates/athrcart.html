@@ -26,7 +26,7 @@
           <th scope="col">BOOK TITLE</th>
           <th scope="col">AUTHOR</th>
           <th scope="col">PRICE(INR)</th>
-          <th scope="col">REMOVE</th>
+          <th scope="col"style="text-align:center;">REMOVE</th>
 
       </tr>
       </thead>
@@ -37,13 +37,17 @@
               <th>{{session['shop_cart'][key]['book_title']}}</th>
               <td>{{session['shop_cart'][key]['author_name']}}</td>
               <td>{{session['shop_cart'][key]['price']}}</td>
-              <td><a href="{{url_for('delete_product',bookid=key)}}"><i class="fas fa-trash fa-2x"></a></i></td>
+              <td style="text-align:center;"><a href="{{url_for('delete_product',bookid=key)}}"><i class="fas fa-trash fa-2x"></a></i></td>
           </tr>
           {% endfor %}
           <tr>
           <th colspan='4'>Total cart price (INR)</th>
-          <th>{{ session['cart_price'] }} </th>
+          <th style="text-align:center;">{{ session['cart_price'] }} </th>
           </tr>
+          <tr>
+            <td colspan='4'> <a href="/emptycart" class="btn btn-danger "> Clear cart</a> </td>
+            <td> <a href="" class="btn btn-success ">Checkout cart</a> </td>
+        </tr>
       </tbody>
   {% else: %}
       <div class ="no-records"><h3>Your cart is empty <i class="far fa-frown"></i></h3></div>

@@ -236,8 +236,18 @@ def delete_product(bookid):
                 return redirect(request.referrer)
     except Exception as e:
         print(e)
-        return redirect(url_for(athrcart)) 
-    
+        return redirect(url_for(athrcart))
+ 
+@app.route('/emptycart')
+def emptycart():
+    try :
+        session.pop('shop_cart',None)
+        return redirect(request.referrer)
+    except Exception as e :
+        print(e)
+
+
+
 @app.route('/Reader')
 @login_required
 def Reader1():
