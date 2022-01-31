@@ -216,6 +216,27 @@ def AddCart():
         print(e)
     finally:
         return redirect(request.referrer)
+
+@app.route('/delete/<int:bookid>')
+def delete_product(bookid):
+    try:
+        session.modified=True
+        total_cart_price=0
+        for key,value in session['shop_cart'].items():
+            if int(key)==bookid:
+                session['shop_cart'].pop(key,None)
+                for key,value in session['shop_cart'].items():
+                    if  session['shop_cart'][key]['price'] != 'Free':
+                        book_price =int(session['shop_cart'][key]['price'])
+                        total_cart_price= total_cart_price+book_price
+                session['cart_price']= total_cart_price
+                if len(session['shop_cart'])==0:
+                    session.pop('shop_cart',None)
+
+                return redirect(request.referrer)
+    except Exception as e:
+        print(e)
+        return redirect(url_for(athrcart)) 
     
 @app.route('/Reader')
 @login_required

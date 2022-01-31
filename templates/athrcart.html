@@ -37,7 +37,7 @@
               <th>{{session['shop_cart'][key]['book_title']}}</th>
               <td>{{session['shop_cart'][key]['author_name']}}</td>
               <td>{{session['shop_cart'][key]['price']}}</td>
-              <td><a href=""><i class="fas fa-trash fa-2x"></a></i></td>
+              <td><a href="{{url_for('delete_product',bookid=key)}}"><i class="fas fa-trash fa-2x"></a></i></td>
           </tr>
           {% endfor %}
           <tr>
@@ -46,7 +46,7 @@
           </tr>
       </tbody>
   {% else: %}
-      <div class ="no-records">Your cart is empty</div>
+      <div class ="no-records"><h3>Your cart is empty <i class="far fa-frown"></i></h3></div>
   {% endif %}
 </table>
       
