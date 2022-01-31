@@ -95,6 +95,7 @@ def logout():
     global usertype
     session.pop("usertype",None)
     session.pop('shop_cart',None)
+    session.pop('cart_price',None)
     logout_user()
     return redirect(url_for('index'))
 
@@ -182,22 +183,33 @@ def array_merge( first_array , second_array ):
 
 @app.route('/addcart',methods=['POST'])
 def AddCart():
+    
     try:
         book_id1=request.form.get('book_id')
         book=Book.query.filter_by(book_id=book_id1).first()
         if book and request.method=='POST':
             Dic_items={book_id1:{'book_title':book.book_title,'author_name':book.author.auth_name,'book_image':book.book_img,'doc_name':book.doc_name,'price':book.price}}
-            
+            total_cart_price=0
             if 'shop_cart'in session:
-                print(session['shop_cart'])
                 if book_id1 in session['shop_cart']:
-                    print(session['shop_cart'])
                     flash('Product already in cart!!')
+                    return redirect(request.referrer)
                 else :
                     session['shop_cart']=array_merge(session['shop_cart'],Dic_items)
-                    print(session['shop_cart'])
+
+                for key,value in session['shop_cart'].items():
+                    if  session['shop_cart'][key]['price'] != 'Free':
+                        # print(session['cart_price'])
+                        book_price =int(session['shop_cart'][key]['price'])
+                        print(book_price)
+                        total_cart_price= total_cart_price+book_price
+                        print(total_cart_price)
+                session['cart_price']= total_cart_price
+                        
             else :
                 session['shop_cart']=Dic_items
+                if  book.price != 'Free':
+                 session['cart_price']=int(book.price)
                 return redirect(request.referrer)
         
     except Exception as e :

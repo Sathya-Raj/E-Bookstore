@@ -19,50 +19,36 @@
 <h1>Hello, {{username}}</h1>
 
 <table class="table table-striped " >
-    <thead>
+  {% if 'shop_cart' in session %}
+      <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
+          <th scope="col">BOOK</th>
+          <th scope="col">BOOK TITLE</th>
+          <th scope="col">AUTHOR</th>
+          <th scope="col">PRICE(INR)</th>
+          <th scope="col">REMOVE</th>
+
       </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-      </tr>
-    </tbody>
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
-        <th scope="col">Handle</th>
-      </tr>
-    </thead>
-    <tbody>
-  </table>
+      </thead>
+      <tbody>
+          {% for key,val in session['shop_cart'].items() %}
+          <tr>
+              <td><img src="{{ url_for('static', filename='css/images/books/')}}{{session['shop_cart'][key]['book_image']}}" alt="book img"class="bookimg"  width="125px" height="150px"></td>
+              <th>{{session['shop_cart'][key]['book_title']}}</th>
+              <td>{{session['shop_cart'][key]['author_name']}}</td>
+              <td>{{session['shop_cart'][key]['price']}}</td>
+              <td><a href=""><i class="fas fa-trash fa-2x"></a></i></td>
+          </tr>
+          {% endfor %}
+          <tr>
+          <th colspan='4'>Total cart price (INR)</th>
+          <th>{{ session['cart_price'] }} </th>
+          </tr>
+      </tbody>
+  {% else: %}
+      <div class ="no-records">Your cart is empty</div>
+  {% endif %}
+</table>
       
 
 {% endblock dashbody %}
