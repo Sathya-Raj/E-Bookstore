@@ -343,10 +343,38 @@ def rdrwishlist():
 
 
 #Reader's settings
-@app.route('/Rdrdashboard/settings')
+@login_required
+@app.route('/Rdrdashboard/settings', methods=['POST','GET'])
 def rdrsettings():
-    return render_template('rdrsettings.html',username=current_user.username)
+    if request.method == "POST":
+        id = current_user.id
+        password = request.form.get('password')
+        username = request.form.get('username')
+        # email = current_user.auth_email
+        # user=Reader.query.filter_by(email=email).first()
+        # if check_password_hash(user.auth_pass,password):
+        if username == "" and password == "":
+            flash("Input either new username or new password","danger")
 
+        elif password == "":
+            db.engine.execute(f"UPDATE `reader` SET `username` = '{username}' WHERE `reader`.`id` = {id}")
+
+        elif username == "":  
+            encpassword = generate_password_hash(password)
+            db.engine.execute(f"UPDATE `reader` SET `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
+
+        else:
+            encpassword = generate_password_hash(password)
+            db.engine.execute(f"UPDATE `reader` SET `username` = '{username}', `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
+
+        flash("Details updated!","success")
+        return redirect('/Rdrdashboard/settings')
+    # else:
+    #     print("Incorrect")
+    #     flash("Invalid Password","warning")
+
+    return render_template('rdrsettings.html',username=current_user.username, email=current_user.email)
+    
 
 #Author's Dashboard
 @app.route('/Athrdashboard')
