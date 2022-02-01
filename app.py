@@ -184,7 +184,7 @@ def array_merge( first_array , second_array ):
         return dict( list( first_array.items() ) + list( second_array.items()))
 
 
-
+#addcart
 @app.route('/addcart',methods=['POST'])
 def AddCart():
     
@@ -252,9 +252,6 @@ def emptycart():
 
 YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 
-<<<<<<< HEAD
-#Reader's page    
-=======
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     try:
@@ -307,7 +304,6 @@ def thankyou():
 def cancel():
     return render_template('cancel.html')
 
->>>>>>> 535d1caa4d5aa9ae660bd518746f1aabf3bde16f
 @app.route('/Reader')
 @login_required
 def Reader1():
