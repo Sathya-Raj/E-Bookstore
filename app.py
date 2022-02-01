@@ -1,3 +1,4 @@
+import email
 from enum import unique
 from http.client import REQUEST_URI_TOO_LONG
 from os import name
@@ -350,7 +351,7 @@ def rdrsettings():
 #Author's Dashboard
 @app.route('/Athrdashboard')
 def Athrdashboard():
-    return render_template('Authordash.html')
+    return render_template('Authordash.html', username=current_user.auth_name)
 
 
 #Author's Cart
@@ -415,9 +416,37 @@ def athraddbooks():
 
      
 #Author Settings
-@app.route('/Athrdashboard/settings')
+@login_required
+@app.route('/Athrdashboard/settings', methods=['POST','GET'])
 def athrsettings():
-    return render_template('athrsettings.html',username=current_user.auth_name)
+    if request.method == "POST":
+        id = current_user.id
+        password = request.form.get('password')
+        username = request.form.get('username')
+        # email = current_user.auth_email
+        # user=Author.query.filter_by(auth_email=email).first()
+        # if check_password_hash(user.auth_pass,password):
+        if username == "" and password == "":
+            flash("Input either new username or new password","danger")
+
+        elif password == "":
+            db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}' WHERE `author`.`id` = {id}")
+
+        elif username == "":  
+            encpassword = generate_password_hash(password)
+            db.engine.execute(f"UPDATE `author` SET `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
+
+        else:
+            encpassword = generate_password_hash(password)
+            db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}', `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
+
+        flash("Details updated!","success")
+        return redirect('/Athrdashboard/settings')
+    # else:
+    #     print("Incorrect")
+    #     flash("Invalid Password","warning")
+
+    return render_template('athrsettings.html',username=current_user.auth_name, email=current_user.auth_email)
 
 
 
