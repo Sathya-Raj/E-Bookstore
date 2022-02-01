@@ -1,7 +1,6 @@
 from enum import unique
 from http.client import REQUEST_URI_TOO_LONG
 from os import name
-from pydoc import doc
 from re import S
 from flask import Flask, flash,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -12,6 +11,7 @@ from flask_login import login_user, logout_user, login_manager, LoginManager
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
+import stripe
 
 local_server = True
 app = Flask (__name__)
@@ -22,7 +22,9 @@ app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstor
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
+publishable_key='pk_test_51KO1VpSHlGttRmJhvs62AgzazNPu7NcG8Amf301MBI7jcb5o6418degeYWrfUv4KGaAnzTdyNxLuE5GSSUcq04e900Gfm2XsVG' 
 
+stripe.api_key='sk_test_51KO1VpSHlGttRmJhyyutXHqYnHEVxvm601314m2x8jBQIrCy8d2rk1ELIIdCRt5abcwrD7W8eVAcO4P7Z8jXAipo00GP6ngyEA'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -37,7 +39,7 @@ def unauthorized_callback():
 
 
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstore'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
 #Database models
@@ -248,8 +250,64 @@ def emptycart():
     except Exception as e :
         print(e)
 
+YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 
+<<<<<<< HEAD
 #Reader's page    
+=======
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    try:
+        line_items_list=[]
+        for key in session['shop_cart'].keys():
+            if  session['shop_cart'][key]['price']=='Free':
+                continue
+            line_items_list.append({'name':session['shop_cart'][key]['book_title'],'currency':'inr','amount':session['shop_cart'][key]['price']+'00','quantity':'1'})
+        print(line_items_list)
+        checkout_session = stripe.checkout.Session.create(
+            submit_type="pay",
+            payment_method_types=["card"],
+            line_items=line_items_list,
+            mode='payment',
+            success_url=YOUR_DOMAIN + 'success',
+            cancel_url=YOUR_DOMAIN + 'cancel',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
+@app.route('/buynow/<int:bookid>')
+def buynow(bookid):
+    try:
+        book=Book.query.filter_by(book_id=bookid).first()
+        {'name':book.book_title,'currency':'inr','amount':book.price+'00','quantity':'1'}
+        checkout_session = stripe.checkout.Session.create(
+            submit_type="pay",
+            payment_method_types=["card"],
+            line_items=[{
+                'name':book.book_title,
+            'currency':'inr',
+            'amount':book.price+'00',
+            'quantity':'1'}],
+            mode='payment',
+            success_url=YOUR_DOMAIN + 'success',
+            cancel_url=YOUR_DOMAIN + 'cancel',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
+@app.route('/success')
+def thankyou():
+    return render_template('success.html')
+
+@app.route('/cancel')
+def cancel():
+    return render_template('cancel.html')
+
+>>>>>>> 535d1caa4d5aa9ae660bd518746f1aabf3bde16f
 @app.route('/Reader')
 @login_required
 def Reader1():
