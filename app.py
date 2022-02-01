@@ -6,7 +6,7 @@ from re import S
 from flask import Flask, flash,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-from sqlalchemy import create_engine
+from markupsafe import re
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_manager, LoginManager
 from flask_login import login_required, current_user
@@ -22,12 +22,11 @@ app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstor
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
-usertype=[]
+
 
 @login_manager.user_loader
 def load_user(user_id):
-    if 'author'in usertype:
-        print(usertype[0])
+    if  session["usertype"]=='author':
         return Author.query.get(int(user_id))
     else :
         return Reader.query.get(int(user_id))
@@ -91,7 +90,10 @@ def index():
 @app.route('/logout')
 @login_required
 def logout():
-    usertype=[]
+    global usertype
+    session.pop("usertype",None)
+    session.pop('shop_cart',None)
+    session.pop('cart_price',None)
     logout_user()
     return redirect(url_for('index'))
 
@@ -100,13 +102,13 @@ def logout():
 @app.route('/loginathr',methods=['POST','GET'])
 def loginathr():
     if request.method == "POST":
-
+        global usertype
         email=request.form.get('email')
         password=request.form.get('password')
         user=Author.query.filter_by(auth_email=email).first()
 
         if user and check_password_hash(user.auth_pass,password):
-            usertype.append('author')
+            session["usertype"]='author'
             login_user(user)
             #flash("Login Success","primary")
             return redirect(url_for('Author1'))
@@ -121,13 +123,13 @@ def loginathr():
 @app.route('/loginrdr',methods=['POST','GET'])
 def loginrdr():
     if request.method == "POST":
-
+        global usertype
         email=request.form.get('email')
         password=request.form.get('password')
         user=Reader.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password,password):
-            usertype.append('reader')
+            session["usertype"]='reader'
             login_user(user)
             # flash("Login Success","primary")
             return redirect(url_for('Reader1'))
@@ -150,7 +152,6 @@ def Signup():
         if type =='reader':
             user = Reader.query.filter_by(email=email).first()
             if user:
-                print("Email already exists")
                 flash("Email Already exists!","warning")
                 return render_template('Signup.html')
             else:
@@ -162,7 +163,6 @@ def Signup():
         else :
             user = Author.query.filter_by(auth_email=email).first()
             if user:
-                print("Email already exists")
                 flash("Email already exists!","warning")
                 return render_template('Signup.html')
             else:
@@ -246,7 +246,6 @@ app.config['PDFUPLOAD_FOLDER']=PDFUPLOAD_FOLDER
 def allowed_imgfile(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_IMGEXTENSIONS
 
-
 def allowed_docfile(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_DOCEXTENSIONS
 
@@ -255,7 +254,7 @@ def allowed_docfile(filename):
 @app.route('/Athrdashboard/addbooks',methods = ['POST', 'GET'])
 def athraddbooks():
     if request.method=="POST":
-        Booktitle=request.form.get('Booktitle')
+        Booktitle=request.form.get('Booktitle').upper()
         Description=request.form.get('Description')
         Price=request.form.get('Price')
         if Price=='Paid':
@@ -265,10 +264,9 @@ def athraddbooks():
         if file and allowed_imgfile(file.filename):          #validation
             print("Valid")
             imgfilename = Booktitle+secure_filename(file.filename)
-            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
         else:
             print("invalid")
-            #flash msg("Invalid image extension supported extensions are:"+ALLOWEDIMGEXTENSIONS)
+            flash("Invalid image type!!, supported extensions are : "+'  '.join(ALLOWED_IMGEXTENSIONS),'danger')
             return render_template('athraddbooks.html',)    
         doc = request.files['pdffile']                 #taking doc input
         print(doc.filename)
@@ -276,10 +274,11 @@ def athraddbooks():
             docfilename = Booktitle+secure_filename(doc.filename)
             doc.save(os.path.join(app.config['PDFUPLOAD_FOLDER'], docfilename))
             userid=current_user.id
+            file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
             db.engine.execute(f"INSERT INTO `book` ( `book_title`, `book_desc`,`price`, `book_img`, `doc_name`,`auth_id`) VALUES ( '{Booktitle}', '{Description}', '{Price}', '{imgfilename}', '{docfilename}','{userid}');")
             return redirect(url_for("Author1"))
         else:
-            #flash msg("Invalid doc extension supported extensions are:"+ALLOWEDDOCEXTENSIONS)
+            flash("Invalid document type!!, supported extensions are : "+ '  '.join(ALLOWED_DOCEXTENSIONS),'danger')
             
             return render_template('athraddbooks.html')
         

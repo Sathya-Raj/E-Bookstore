@@ -48,14 +48,14 @@ E-Book
   
   
     <h4>{{items.book_title}}</h4>
-    <h5>by:   {{items.author.auth_name}} </h5>
+    <h5>by:   {{items.author.auth_name}} </h5><hr>
     <p style="font-weight: 500;">Description :</p>
-    <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div>
+    <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div><hr>
     <p class="price"> PRICE (inr.) : {{items.price}} </p>
-
+  
   <div class="stage" >
-  <button class="btn">Buy Now</button>
-  <button class="btn">Add to Wishlist</button>
+    <form action=""><button class="btn">Buy Now</button></form><br>
+  <form action=""><button class="btn">Add to Wishlist</button></form>
   </div>
 </div>
 

@@ -1,7 +1,7 @@
 {% extends 'basedashboard.html' %}
 
 {% block homelogo %}
-<a hef="Reader"><a href="Author" style="color: rgb(240, 85, 64); "><h3><i class="fas fa-home"></i></h3></a></a>
+<a hef="Reader"><a href="/Reader" style="color: rgb(240, 85, 64); "><h3><i class="fas fa-home"></i></h3></a></a>
 {% endblock homelogo %}
 
 {% block navi %}
@@ -16,8 +16,39 @@
 
 {% block dashbody %}
 <h1>Hello, {{username}}</h1>
-<div class="row">
-    <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
-    
-    </div>
+<table class="table table-striped "  >
+    {% if 'shop_cart' in session %}
+        <thead>
+        <tr>
+            <th scope="col" >BOOK</th>
+            <th scope="col">BOOK TITLE</th>
+            <th scope="col">AUTHOR</th>
+            <th scope="col">PRICE</th>
+            <th scope="col"style="text-align:center;">REMOVE</th>
+
+        </tr>
+        </thead>
+        <tbody>
+            {% for key,val in session['shop_cart'].items() %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='css/images/books/')}}{{session['shop_cart'][key]['book_image']}}" alt="book img"class="bookimg"  width="125px" height="150px"></td>
+                <th>{{session['shop_cart'][key]['book_title']}}</th>
+                <td>{{session['shop_cart'][key]['author_name']}}</td>
+                <td>{{session['shop_cart'][key]['price']}}</td>
+                <td style="text-align:center;" ><a href="{{url_for('delete_product',bookid=key)}}"><i class="fas fa-trash fa-2x"></a></i></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th colspan='4'>Total cart price (INR)</th>
+                <th style="text-align:center;"> {{ session['cart_price'] }}</th>
+            </tr>
+            <tr>
+                <td colspan='4'> <a href="/emptycart" class="btn btn-danger "> Clear cart</a> </td>
+                <td> <a href="" class="btn btn-success ">Checkout cart</a> </td>
+            </tr>
+        </tbody>
+    {% else: %}
+    <div class ="no-records"><h3>Your cart is empty <i class="far fa-frown"></i></h3></div>
+    {% endif %}
+  </table>
 {% endblock dashbody %}
