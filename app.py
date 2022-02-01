@@ -1,4 +1,3 @@
-
 from enum import unique
 from http.client import REQUEST_URI_TOO_LONG
 from os import name
@@ -7,6 +6,7 @@ from re import S
 from flask import Flask, flash,render_template,request,session,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from sqlalchemy import create_engine
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_manager, LoginManager
 from flask_login import login_required, current_user
@@ -19,7 +19,6 @@ app.secret_key='ebookstore'
 
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/ebookstore'
 #User access
-
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
@@ -82,13 +81,13 @@ class Book(UserMixin,db.Model):
     author = db.relationship("Author",backref= db.backref("author",uselist=False))
 
 
-
+#Index page
 @app.route('/')
 def index():
     return render_template('index.html',newreleases=Book.query.all())
 
 
-
+#logout page
 @app.route('/logout')
 @login_required
 def logout():
@@ -96,6 +95,8 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
+#Author's login 
 @app.route('/loginathr',methods=['POST','GET'])
 def loginathr():
     if request.method == "POST":
@@ -115,6 +116,8 @@ def loginathr():
     
     return render_template('loginathr.html')
 
+
+#Reader's login
 @app.route('/loginrdr',methods=['POST','GET'])
 def loginrdr():
     if request.method == "POST":
@@ -136,7 +139,7 @@ def loginrdr():
     return render_template('loginrdr.html')
 
 
-
+#Signup
 @app.route('/Signup', methods = ['POST', 'GET'])
 def Signup():
     if request.method == "POST":
@@ -168,45 +171,67 @@ def Signup():
                 flash("Signup Successful","success")
                 return render_template('loginathr.html')
 
-        
 
     return render_template('Signup.html')
-    
+
+
+#Reader's page    
 @app.route('/Reader')
 @login_required
 def Reader1():
     return render_template('Reader.html',newreleases=Book.query.all())
 
+
+#Author's page
 @app.route('/Author')
 @login_required
 def Author1():
     return render_template('Author.html',newreleases=Book.query.all())
 
+#ViewCollections
+@app.route('/ViewCollections')
+def ViewCollections():
+    return render_template('ViewCollections.html',newreleases=Book.query.all())
+
+
+
+#Reader's Dashboard
 @app.route('/Rdrdashboard')
 def Rdrdashboard():
     return render_template('Readerdash.html',username=current_user.username)
  
 
+#Reader's cart
 @app.route('/Rdrdashboard/cart')
 def rdrcart():
     return render_template('rdrcart.html',username=current_user.username)
 
+
+#Reader's wishlist
 @app.route('/Rdrdashboard/wishlist')
 def rdrwishlist():
     return render_template('rdrwishlist.html',username=current_user.username)
 
+
+#Reader's settings
 @app.route('/Rdrdashboard/settings')
 def rdrsettings():
     return render_template('rdrsettings.html',username=current_user.username)
 
+
+#Author's Dashboard
 @app.route('/Athrdashboard')
 def Athrdashboard():
     return render_template('Authordash.html')
 
+
+#Author's Cart
 @app.route('/Athrdashboard/cart')
 def athrcart():
     return render_template('athrcart.html')
 
+
+#Author's Wishlist
 @app.route('/Athrdashboard/wishlist')
 def athrwishlist():
     return render_template('athrwishlist.html',username=current_user.auth_name)
@@ -225,6 +250,8 @@ def allowed_imgfile(filename):
 def allowed_docfile(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_DOCEXTENSIONS
 
+
+#Author's add books
 @app.route('/Athrdashboard/addbooks',methods = ['POST', 'GET'])
 def athraddbooks():
     if request.method=="POST":
@@ -256,15 +283,33 @@ def athraddbooks():
             
             return render_template('athraddbooks.html')
         
-
-   
     else:
      return render_template('athraddbooks.html',)
 
+     
+#Author Settings
 @app.route('/Athrdashboard/settings')
 def athrsettings():
     return render_template('athrsettings.html',username=current_user.auth_name)
- 
+
+
+
+#Search function
+@app.route('/search', methods = ['POST'])
+def search():
+    if request.method == "POST":
+        book = request.form.get('book')
+        print(book)
+        result = db.engine.execute("SELECT b.book_title, a.auth_name FROM `book` b, `author` a WHERE b.auth_id = a.id AND b.book_title = %s OR a.auth_name = %s", (book,book))
+        data = result.fetchall()
+        print(data)
+        #all in the search box will return all the tuples
+        if len(data) == 0: 
+            db.engine.execute("SELECT b.book_title, a.auth_name from Book b, Author a")
+            data = result.fetchall()
+        return render_template('search.html', data=data)
+    return render_template('search.html')
+            
     
 
 if __name__=="__main__":
