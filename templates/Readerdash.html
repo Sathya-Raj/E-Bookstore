@@ -16,8 +16,34 @@
 
 {% block dashbody %}
 <h1>Hello, {{username}}</h1>
-<div class="row">
-    <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
-    
-    </div>
+
+        <table class="table table-striped "  >
+            {% if orderbooks %}
+                <thead>
+                <tr>
+                    <th scope="col" style="text-align:center;">ORDER ID</th>
+                    <th scope="col" >BOOK</th>
+                    <th scope="col">BOOK TITLE</th>
+                    <th scope="col">AUTHOR</th>
+                    <th scope="col">PRICE</th>
+                    <th scope="col" style="text-align:center;">ENJOY READING</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                    {% for items in orderbooks %}
+                    <tr>
+                        <td style="text-align:center;">{{items.ord_id}}</td>
+                        <td><img src="{{ url_for('static', filename='css/images/books/')}}{{items.book.book_img}}" alt="book img"class="bookimg"  width="125px" height="150px"></td>
+                        <th>{{items.book.book_title}}</th>
+                        <td>{{items.book.author.auth_name}}</td>
+                        <td>{{items.book.price}}</td>
+                        <td style="text-align:center;"><a href="{{url_for('display',doc_name=items.book.doc_name)}}" target="_blank"><i class="fas fa-arrow-circle-right fa-2x"></i></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            {% else: %}
+            <div class ="no-records"><h3>No orders Yet !! <i class="far fa-frown"></i></h3></div>
+            {% endif %}
+        </table>
 {% endblock dashbody %}

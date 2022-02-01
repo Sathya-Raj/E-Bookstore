@@ -2,6 +2,9 @@
 
 
 /*Login Signup Page*/
+html{
+    height: 100%;
+}
 a:focus,a:hover,a{
     outline:none;
     text-decoration: none;

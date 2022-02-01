@@ -1,9 +1,12 @@
 
+from datetime import datetime
+from email.policy import default
 from enum import unique
 from http.client import REQUEST_URI_TOO_LONG
+import json
 from os import name
 from re import S
-from flask import Flask, flash,render_template,request,session,redirect, url_for
+from flask import Flask, flash,render_template,request,session,redirect, url_for,send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from markupsafe import re
@@ -83,6 +86,29 @@ class Book(UserMixin,db.Model):
         nullable=False)
     author = db.relationship("Author",backref= db.backref("author",uselist=False))
 
+
+
+class ReaderOrders(UserMixin,db.Model):
+    __tablename__='readerorders'
+    ord_id=db.Column(db.Integer,primary_key=True)
+    book_id= db.Column(db.Integer, db.ForeignKey('book.book_id'),nullable=False)
+    rdr_id = db.Column(db.Integer, db.ForeignKey('reader.id'),nullable=False)
+    ord_date=db.Column(db.DateTime,nullable=False,default=datetime.utcfromtimestamp)
+    book = db.relationship("Book",backref= db.backref("rdr_book",uselist=False),foreign_keys=[book_id],)
+    reader = db.relationship("Reader",backref= db.backref("reader_ord",uselist=False),foreign_keys=[rdr_id])
+    orders=db.Column(db.String(50))
+
+class AuthorOrders(UserMixin,db.Model):
+    __tablename__='authororders'
+    ord_id=db.Column(db.Integer,primary_key=True)
+    book_id= db.Column(db.Integer, db.ForeignKey('book.book_id'),nullable=False)
+    athr_id = db.Column(db.Integer, db.ForeignKey('author.id'),nullable=False)
+    ord_date=db.Column(db.DateTime,nullable=False,default=datetime.utcfromtimestamp)
+    book = db.relationship("Book",backref= db.backref("athr_book",uselist=False),foreign_keys=[book_id])
+    author = db.relationship("Author",backref= db.backref("author_ord",uselist=False),foreign_keys=[athr_id])
+    orders=db.Column(db.String(50))
+
+db.create_all()
 
 
 @app.route('/')
@@ -253,12 +279,34 @@ YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     try:
+        if session['usertype']=='author':
+            if session['cart_price']==0:
+                for keys in session['shop_cart']:
+                    id=current_user.id                    
+                    bookid=keys
+                    order=session['shop_cart'][keys]['book_title']
+                    db.engine.execute(f"INSERT INTO `authororders` ( `book_id`, `athr_id`, `orders`) VALUES ( '{bookid}', '{id}', '{order}')")
+                    delete_product(bookid)
+                    
+                session.pop('ord_book',None)
+                
+                return redirect(url_for('Athrdashboard'))
+        elif session['usertype']=='reader':
+            if session['cart_price']==0:
+                for keys in session['shop_cart']:
+                    id=current_user.id
+                    bookid=keys
+                    order=session['shop_cart'][keys]['book_title']
+                    db.engine.execute(f"INSERT INTO `authororders` ( `book_id`, `athr_id`, `orders`) VALUES ( '{bookid}', '{id}', '{order}')")
+                    delete_product(bookid)
+                session.pop('ord_book',None)
+                return redirect(url_for('Athrdashboard'))
         line_items_list=[]
+        session['ord_book']=session['shop_cart']
         for key in session['shop_cart'].keys():
             if  session['shop_cart'][key]['price']=='Free':
                 continue
             line_items_list.append({'name':session['shop_cart'][key]['book_title'],'currency':'inr','amount':session['shop_cart'][key]['price']+'00','quantity':'1'})
-        print(line_items_list)
         checkout_session = stripe.checkout.Session.create(
             submit_type="pay",
             payment_method_types=["card"],
@@ -276,7 +324,7 @@ def create_checkout_session():
 def buynow(bookid):
     try:
         book=Book.query.filter_by(book_id=bookid).first()
-        {'name':book.book_title,'currency':'inr','amount':book.price+'00','quantity':'1'}
+        session['ord_book'][bookid]= {'name':book.book_title,'currency':'inr','amount':book.price+'00','quantity':'1'}
         checkout_session = stripe.checkout.Session.create(
             submit_type="pay",
             payment_method_types=["card"],
@@ -295,12 +343,40 @@ def buynow(bookid):
     return redirect(checkout_session.url, code=303)
 
 @app.route('/success')
+@login_required
 def thankyou():
-    return render_template('success.html')
+    if session['usertype']=='author':
+        for keys in session['ord_book']:
+            id=current_user.id
+            bookid=keys
+            order=session['ord_book'][keys]['book_title']
+            db.engine.execute(f"INSERT INTO `authororders` ( `book_id`, `athr_id`, `orders`) VALUES ( '{bookid}', '{id}', '{order}')")
+            delete_product(bookid)
+        session.pop('ord_book',None)
+        return redirect(url_for('Athrdashboard'))
+    elif session['usertype']=='reader':
+        for keys in session['ord_book']:
+            id=current_user.id
+            bookid=keys
+            order=session['ord_book'][keys]['book_title']
+            db.engine.execute(f"INSERT INTO `readerorders` ( `book_id`, `rdr_id`, `orders`) VALUES ( '{bookid}', '{id}', '{order}')")
+            delete_product(bookid)
+        session.pop('ord_book',None)
+        return redirect(url_for('Rdrdashboard'))
+        
 
 @app.route('/cancel')
+@login_required
 def cancel():
-    return render_template('cancel.html')
+    if session['usertype']=='reader':
+        return redirect(url_for('rdrcart'))
+    elif session['usertype']=='reader':
+        return redirect(url_for('athrcart'))
+
+@app.route('/display/<string:doc_name>')
+@login_required
+def display(doc_name):
+    return send_from_directory(PDFUPLOAD_FOLDER, doc_name)
 
 @app.route('/Reader')
 @login_required
@@ -313,31 +389,44 @@ def Author1():
     return render_template('Author.html',newreleases=Book.query.all())
 
 @app.route('/Rdrdashboard')
+@login_required
 def Rdrdashboard():
-    return render_template('Readerdash.html',username=current_user.username)
+    return render_template('Readerdash.html',
+    orderbooks=ReaderOrders.query.filter_by(rdr_id=current_user.id).all(),
+    username=current_user.username
+    )
  
 
 @app.route('/Rdrdashboard/cart')
+@login_required
 def rdrcart():
     return render_template('rdrcart.html',username=current_user.username)
 
 @app.route('/Rdrdashboard/wishlist')
+@login_required
 def rdrwishlist():
     return render_template('rdrwishlist.html',username=current_user.username)
 
 @app.route('/Rdrdashboard/settings')
+@login_required
 def rdrsettings():
     return render_template('rdrsettings.html',username=current_user.username)
 
 @app.route('/Athrdashboard')
+@login_required
 def Athrdashboard():
-    return render_template('Authordash.html')
+    return render_template('Authordash.html',
+    orderbooks=AuthorOrders.query.filter_by(athr_id=current_user.id).all(),
+    username=current_user.auth_name
+    )
 
 @app.route('/Athrdashboard/cart')
+@login_required
 def athrcart():
     return render_template('athrcart.html')
 
 @app.route('/Athrdashboard/wishlist')
+@login_required
 def athrwishlist():
     return render_template('athrwishlist.html',username=current_user.auth_name)
 
@@ -391,6 +480,7 @@ def athraddbooks():
      return render_template('athraddbooks.html',)
 
 @app.route('/Athrdashboard/settings')
+@login_required
 def athrsettings():
     return render_template('athrsettings.html',username=current_user.auth_name)
  
