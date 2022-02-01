@@ -175,6 +175,80 @@ def Signup():
     return render_template('Signup.html')
 
 
+def array_merge( first_array , second_array ):
+    if isinstance( first_array , list ) and isinstance( second_array , list ):
+     return first_array + second_array
+    elif isinstance( first_array , dict ) and isinstance( second_array , dict):
+        return dict( list( first_array.items() ) + list( second_array.items()))
+
+
+
+@app.route('/addcart',methods=['POST'])
+def AddCart():
+    
+    try:
+        book_id1=request.form.get('book_id')
+        book=Book.query.filter_by(book_id=book_id1).first()
+        if book and request.method=='POST':
+            Dic_items={book_id1:{'book_title':book.book_title,'author_name':book.author.auth_name,'book_image':book.book_img,'doc_name':book.doc_name,'price':book.price}}
+            total_cart_price=0
+            if 'shop_cart'in session:
+                if book_id1 in session['shop_cart']:
+                    flash('Product already in cart!!')
+                    return redirect(request.referrer)
+                else :
+                    session['shop_cart']=array_merge(session['shop_cart'],Dic_items)
+
+                for key,value in session['shop_cart'].items():
+                    if  session['shop_cart'][key]['price'] != 'Free':
+                        # print(session['cart_price'])
+                        book_price =int(session['shop_cart'][key]['price'])
+                        print(book_price)
+                        total_cart_price= total_cart_price+book_price
+                        print(total_cart_price)
+                session['cart_price']= total_cart_price
+                        
+            else :
+                session['shop_cart']=Dic_items
+                if  book.price != 'Free':
+                 session['cart_price']=int(book.price)
+                return redirect(request.referrer)
+        
+    except Exception as e :
+        print(e)
+    finally:
+        return redirect(request.referrer)
+
+@app.route('/delete/<int:bookid>')
+def delete_product(bookid):
+    try:
+        session.modified=True
+        total_cart_price=0
+        for key,value in session['shop_cart'].items():
+            if int(key)==bookid:
+                session['shop_cart'].pop(key,None)
+                for key,value in session['shop_cart'].items():
+                    if  session['shop_cart'][key]['price'] != 'Free':
+                        book_price =int(session['shop_cart'][key]['price'])
+                        total_cart_price= total_cart_price+book_price
+                session['cart_price']= total_cart_price
+                if len(session['shop_cart'])==0:
+                    session.pop('shop_cart',None)
+
+                return redirect(request.referrer)
+    except Exception as e:
+        print(e)
+        return redirect(url_for(athrcart))
+ 
+@app.route('/emptycart')
+def emptycart():
+    try :
+        session.pop('shop_cart',None)
+        return redirect(request.referrer)
+    except Exception as e :
+        print(e)
+
+
 #Reader's page    
 @app.route('/Reader')
 @login_required
