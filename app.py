@@ -483,8 +483,36 @@ def athraddbooks():
 @login_required
 def athrsettings():
     return render_template('athrsettings.html',username=current_user.auth_name)
- 
-    
+
+@app.route('/search', methods = ['POST'])
+def search():
+    if request.method == "POST":
+        keyword = request.form.get('Search-box')
+        author1=Author.query.filter_by(auth_name=keyword).all()
+        book=Book.query.filter_by(book_title=keyword).all()
+    if author1 and book :
+        return render_template('search.html',
+        author=Book.query.filter_by(auth_id=author1[0].id).all(),
+        book=Book.query.filter_by(book_title=keyword).all()
+        )
+    elif author1 :
+        return render_template('search.html',
+        author=Book.query.filter_by(auth_id=author1[0].id).all(),
+        )
+    elif   book :
+        return render_template('search.html',
+        book=Book.query.filter_by(book_title=keyword).all()
+        )
+
+@app.route('/Home')
+@login_required
+def home():
+    if 'usertype' not in session:
+        return redirect(url_for("index"))
+    if session['usertype']=='author':
+        return redirect(url_for("Author1"))
+    elif session['usertype']=='reader':
+        return redirect(url_for("Reader1"))
 
 if __name__=="__main__":
     app.run(debug=True,port=8000)
