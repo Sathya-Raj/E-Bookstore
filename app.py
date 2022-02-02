@@ -44,18 +44,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
 #Database models
-
-# class Test(db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     name = db.Column(db.String(100))
-#     email = db.Column(db.String(100))
-
-# class User(UserMixin,db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     username = db.Column(db.String(50))
-#     email = db.Column(db.String(50))
-#     password = db.Column(db.String(1000))
-
 class Author(UserMixin,db.Model):
     __tablename__='author'
     id = db.Column(db.Integer,primary_key=True)
