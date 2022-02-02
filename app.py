@@ -421,7 +421,7 @@ def athraddbooks():
             userid=current_user.id
             file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
             db.engine.execute(f"INSERT INTO `book` ( `book_title`, `book_desc`,`price`, `book_img`, `doc_name`,`auth_id`) VALUES ( '{Booktitle}', '{Description}', '{Price}', '{imgfilename}', '{docfilename}','{userid}');")
-            return redirect(url_for("Author1"))
+            return redirect(url_for("athrmybooks"))
         else:
             flash("Invalid document type!!, supported extensions are : "+ '  '.join(ALLOWED_DOCEXTENSIONS),'danger')
             
@@ -429,6 +429,39 @@ def athraddbooks():
         
     else:
      return render_template('athraddbooks.html',)
+
+#Author's MyBooks
+@app.route('/Athrdashboard/athrmybooks')
+def athrmybooks():
+    id=current_user.id
+    query=db.engine.execute(f"SELECT * FROM `book` WHERE auth_id='{id}'")
+    return render_template('athrmybooks.html',query=query,username=current_user.auth_name)
+
+#Edit MyBooks
+@app.route("/edit/<string:book_id>",methods=['POST','GET'])
+@login_required
+def edit(book_id):
+    posts=Book.query.filter_by(book_id=book_id).first()
+    if request.method=="POST":
+        title=request.form.get('title')
+        desc=request.form.get('desc')
+        price=request.form.get('price')
+        if price=='Paid':
+            price=request.form.get('Amount')
+        db.engine.execute(f"UPDATE `book` SET `book_title` = '{title}', `book_desc` = '{desc}', `price` = '{price}' WHERE `book`.`book_id` = {book_id}")
+        flash("Book Details Updated!","success")
+        return redirect('/Athrdashboard/athrmybooks')
+    
+    return render_template('edit.html',posts=posts)
+
+#Delete MyBook
+@app.route("/deletebook/<string:book_id>",methods=['POST','GET'])
+@login_required
+def deletebook(book_id):
+    db.engine.execute(f"DELETE FROM `book` WHERE `book`.`book_id`={book_id}")
+    flash("Book Deleted","danger")
+    return redirect('/Athrdashboard/athrmybooks')
+
 
      
 #Author Settings
