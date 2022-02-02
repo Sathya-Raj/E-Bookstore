@@ -1,18 +1,113 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
+
+
+     {% block title %}
+
+
+    </title>
+
     Search Results
     </title>
 
-    {% block css %}
-    {% endblock css %}
-
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/style1.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='fontawesome/css/all.min.css') }}">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    
+</head>
+<body>
+
+  <div class="container1">
+    <header>
+        <div class="header1" >
+            <h1><i class="fas fa-book-reader"></i>&nbsp;E-Book</h1>
+            <form action="/search" method="POST">
+                <div id="searchform"> 
+                 <input type="search"placeholder="Books,Authors.." name="Search-box" required>
+                 <button type="submit" id="Search-btn"> <i class="fas fa-search"></i></button>
+                </div>
+              </form>
+          <div class="navbar" style="border-radius: 50%;">
+              <a href="/Home"><i class="fas fa-home"></i></a>
+          </div>
+        </div>
+    
+    </header>
+</section >
+    <div class="main">
+        {% if author or book%}
+        {% if author %}
+    <p class="heading"><h2>Search results :</h2> </p>
+    <section class="bookrows">
+        
+        {% for items in author %}
+        <div class="booksec">
+         
+        <div class="book_image"> 
+          <img src="{{ url_for('static', filename='css/images/books/')}}{{items.book_img}}" alt="book img"class="bookimg"  width="175px">
+        </div>
+        <div class="description">
+          
+          
+            <h4>{{items.book_title}}</h4>
+            <h5>by:   {{items.author.auth_name}} </h5><hr>
+            <p style="font-weight: 500;">Description :</p>
+            <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div><hr>
+            <p class="price"> PRICE (inr.) : {{items.price}} </p>
+          
+          <div class="stage" >
+            <form action=""><button class="btn">Buy Now</button></form><br>
+          <form action=""><button class="btn">Add to Wishlist</button></form>
+          </div>
+        </div>
+        
+          
+        </div>
+        {% endfor %}
+        {% endif %}
+
+       {% if book %}
+       <p class="heading"><h2>Search results :</h2> </p>
+       <section class="bookrows">
+           
+           {% for items in book %}
+           <div class="booksec">
+            
+           <div class="book_image"> 
+             <img src="{{ url_for('static', filename='css/images/books/')}}{{items.book_img}}" alt="book img"class="bookimg"  width="175px">
+           </div>
+           <div class="description">
+             
+             
+               <h4>{{items.book_title}}</h4>
+               <h5>by:   {{items.author.auth_name}} </h5><hr>
+               <p style="font-weight: 500;">Description :</p>
+               <div class="desc" style="line-height: 35px;min-height:150px ;">  {{items.book_desc}}</div><hr>
+               <p class="price"> PRICE (inr.) : {{items.price}} </p>
+             
+             <div class="stage" >
+               <form action=""><button class="btn">Buy Now</button></form><br>
+             <form action=""><button class="btn">Add to Wishlist</button></form>
+             </div>
+           </div>
+           
+             
+           </div>
+           {% endfor %}
+           {% endif %}
+       {% else: %}
+      <div style="border-radius:4px;"> <h2>No results matching your keyword,try something else  <i class="far fa-frown"></i></h2></div>
+      {% endif %}
+</section>
+  </div>
+</body>
+</html>
+
 
 </head>
 <body>
@@ -43,4 +138,5 @@
         
         {% endblock nav %}
        
-    </nav> -->
+    </nav> 
+
