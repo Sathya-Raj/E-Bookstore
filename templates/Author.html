@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-E-Book
+Author
 {% endblock title %}
 
 {% block icons %}
@@ -24,20 +24,7 @@ E-Book
 {% endblock nav %}
 
 {% block newreleases %}
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-  {% for category, message in messages %}
 
-    <div class="alert-{{ category }} alert-dismissible " role="alert" style="padding-top: 5px;padding-bottom: 5px;">
-        <strong style=" color: rgb(223, 19, 19); ">{{ message }}</strong>
-        <button type="button" class="close bg danger" data-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';"style="border:none; color:red;">
-          <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-
-  {% endfor %}
-  {% endif %}
-{% endwith %}
 {% for items in newreleases %}
 <div class="booksec">
   <div class="book_image"> 
@@ -51,7 +38,7 @@ E-Book
     <p class="price"> PRICE (inr.) : {{items.price}} </p>
 
   <div class="stage" >
-    <form action="">
+    <form action="{{url_for('buynow',bookid=items.book_id)}}">
       <input type="hidden" name='book_id' value="{{ items.book_id }}">
       <button class="btn">Buy Now</button>
     </form><br>

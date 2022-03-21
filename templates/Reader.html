@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-E-Book
+Reader
 {% endblock title %}
 
 {% block icons %}
@@ -50,7 +50,7 @@ E-Book
       <p class="price"> PRICE (inr.) : {{items.price}} </p>
 
     <div class="stage" >
-      <form action="">
+      <form action="{{url_for('buynow',bookid=items.book_id)}}">
         <input type="hidden" name='book_id' value="{{ items.book_id }}">
         <button class="btn">Buy Now</button>
       </form><br>
