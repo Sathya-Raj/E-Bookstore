@@ -48,18 +48,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
 #Database models
-
-# class Test(db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     name = db.Column(db.String(100))
-#     email = db.Column(db.String(100))
-
-# class User(UserMixin,db.Model):
-#     id = db.Column(db.Integer,primary_key=True)
-#     username = db.Column(db.String(50))
-#     email = db.Column(db.String(50))
-#     password = db.Column(db.String(1000))
-
 class Author(UserMixin,db.Model):
     __tablename__='author'
     id = db.Column(db.Integer,primary_key=True)
@@ -78,15 +66,13 @@ class Book(UserMixin,db.Model):
     __tablename__='book'
     book_id = db.Column(db.Integer,primary_key=True)
     book_title = db.Column(db.String(50))
-    book_desc = db.Column(db.String(50))
+    book_desc = db.Column(db.String(10000))
     price=db.Column(db.String(10))
     book_img = db.Column(db.String(1000))
     doc_name = db.Column(db.String(1000))
     auth_id = db.Column(db.Integer, db.ForeignKey('author.id'),
         nullable=False)
     author = db.relationship("Author",backref= db.backref("author",uselist=False))
-
-
 
 class ReaderOrders(UserMixin,db.Model):
     __tablename__='readerorders'
@@ -425,7 +411,7 @@ def Author1():
 #ViewCollections
 @app.route('/ViewCollections')
 def ViewCollections():
-    return render_template('ViewCollections.html',newreleases=Book.query.all())
+    return redirect(url_for('index'))
 
 
 
@@ -460,33 +446,37 @@ def rdrwishlist():
 def rdrsettings():
     if request.method == "POST":
         id = current_user.id
-        password = request.form.get('password')
+        password = request.form.get('newpassword')
         username = request.form.get('username')
-        # email = current_user.auth_email
-        # user=Reader.query.filter_by(email=email).first()
-        # if check_password_hash(user.auth_pass,password):
-        if username == "" and password == "":
-            flash("Input either new username or new password","danger")
+        oldpassword = request.form.get('oldpassword')
+        email = current_user.email
+        user=Reader.query.filter_by(email=email).first()
+        if check_password_hash(user.password,oldpassword):
+            if username == "" and password == "":
+                flash("Input either new username or new password","warning")
+                return redirect(request.referrer)
 
-        elif password == "":
-            db.engine.execute(f"UPDATE `reader` SET `username` = '{username}' WHERE `reader`.`id` = {id}")
+            elif password == "":
+                db.engine.execute(f"UPDATE `reader` SET `username` = '{username}' WHERE `reader`.`id` = {id}")
 
-        elif username == "":  
-            encpassword = generate_password_hash(password)
-            db.engine.execute(f"UPDATE `reader` SET `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
+            elif username == "":  
+                encpassword = generate_password_hash(password)
+                db.engine.execute(f"UPDATE `reader` SET `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
 
+            else:
+                encpassword = generate_password_hash(password)
+                db.engine.execute(f"UPDATE `reader` SET `username` = '{username}', `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
+
+            flash("Details updated!","success")
+            return redirect('/Rdrdashboard/settings')
         else:
-            encpassword = generate_password_hash(password)
-            db.engine.execute(f"UPDATE `reader` SET `username` = '{username}', `password` = '{encpassword}' WHERE `reader`.`id` = {id}")
+            print("Incorrect old password")
+            flash("Invalid Password","danger")
+            
 
-        flash("Details updated!","success")
-        return redirect('/Rdrdashboard/settings')
-    # else:
-    #     print("Incorrect")
-    #     flash("Invalid Password","warning")
 
     return render_template('rdrsettings.html',username=current_user.username, email=current_user.email)
-    
+   
 
 #Author's Dashboard
 @app.route('/Athrdashboard')
@@ -551,7 +541,7 @@ def athraddbooks():
             userid=current_user.id
             file.save(os.path.join(app.config['IMGUPLOAD_FOLDER'], imgfilename))
             db.engine.execute(f"INSERT INTO `book` ( `book_title`, `book_desc`,`price`, `book_img`, `doc_name`,`auth_id`) VALUES ( '{Booktitle}', '{Description}', '{Price}', '{imgfilename}', '{docfilename}','{userid}');")
-            return redirect(url_for("Author1"))
+            return redirect(url_for("athrmybooks"))
         else:
             flash("Invalid document type!!, supported extensions are : "+ '  '.join(ALLOWED_DOCEXTENSIONS),'danger')
             
@@ -560,25 +550,99 @@ def athraddbooks():
     else:
      return render_template('athraddbooks.html',)
 
+#Author's MyBooks
+@app.route('/Athrdashboard/athrmybooks')
+def athrmybooks():
+    id=current_user.id
+    query=db.engine.execute(f"SELECT * FROM `book` WHERE auth_id='{id}'")
+    return render_template('athrmybooks.html',query=query,username=current_user.auth_name)
 
+#Edit MyBooks
+@app.route("/edit/<string:book_id>",methods=['POST','GET'])
+@login_required
+def edit(book_id):
+    posts=Book.query.filter_by(book_id=book_id).first()
+    if request.method=="POST":
+        title=request.form.get('title')
+        desc=request.form.get('desc')
+        price=request.form.get('price')
+        if price=='Paid':
+            price=request.form.get('Amount')
+        db.engine.execute(f"UPDATE `book` SET `book_title` = '{title}', `book_desc` = '{desc}', `price` = '{price}' WHERE `book`.`book_id` = {book_id}")
+        flash("Book Details Updated!","success")
+        return redirect('/Athrdashboard/athrmybooks')
+    
+    return render_template('edit.html',posts=posts)
+
+#Delete MyBook
+@app.route("/deletebook/<string:book_id>",methods=['POST','GET'])
+@login_required
+def deletebook(book_id):
+    db.engine.execute(f"DELETE FROM `book` WHERE `book`.`book_id`={book_id}")
+    flash("Book Deleted","danger")
+    return redirect('/Athrdashboard/athrmybooks')
+
+
+     
+#Author Settings
+@login_required
+@app.route('/Athrdashboard/settings', methods=['POST','GET'])
+def athrsettings():
+    if request.method == "POST":
+        id = current_user.id
+        password = request.form.get('newpassword')
+        username = request.form.get('username')
+        oldpassword = request.form.get('oldpassword')
+        email = current_user.auth_email
+        user=Author.query.filter_by(auth_email=email).first()
+        if check_password_hash(user.auth_pass,oldpassword):
+            if username == "" and password == "":
+                flash("Input either new username or new password","warning")
+                return redirect(request.referrer)
+
+            elif password == "":
+                db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}' WHERE `author`.`id` = {id}")
+
+            elif username == "":  
+                encpassword = generate_password_hash(password)
+                db.engine.execute(f"UPDATE `author` SET `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
+
+            else:
+                encpassword = generate_password_hash(password)
+                db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}', `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
+
+            flash("Details updated!","success")
+            return redirect('/Athrdashboard/settings')
+        else:
+            print("Incorrect old password")
+            flash("Invalid Password","danger")
+
+
+    return render_template('athrsettings.html',username=current_user.auth_name, email=current_user.auth_email)
+
+
+
+#Search function
 @app.route('/search', methods = ['POST'])
 def search():
     if request.method == "POST":
         keyword = request.form.get('Search-box')
-        author1=Author.query.filter_by(auth_name=keyword).all()
-        book=Book.query.filter_by(book_title=keyword).all()
-    if author1 and book :
+        print(keyword)
+       # keyword=keyword.upper()
+        author1 = Author.query.filter_by(auth_name=keyword).all()
+        book = Book.query.filter_by(book_title=keyword).all()
+    if author1 and book:
         return render_template('search.html',
-        author=Book.query.filter_by(auth_id=author1[0].id).all(),
-        book=Book.query.filter_by(book_title=keyword).all()
+        author = Book.query.filter_by(auth_id=author1[0].id).all(),
+        book = Book.query.filter_by(book_title=keyword).all()
         )
-    elif author1 :
+    elif author1:
         return render_template('search.html',
-        author=Book.query.filter_by(auth_id=author1[0].id).all(),
+        author = Book.query.filter_by(auth_id=author1[0].id).all()
         )
     else :
         return render_template('search.html',
-        book=Book.query.filter_by(book_title=keyword).all()
+        book = Book.query.filter_by(book_title=keyword).all()
         )
 
 @app.route('/Home')
@@ -590,39 +654,6 @@ def home():
         return redirect(url_for("Author1"))
     elif session['usertype']=='reader':
         return redirect(url_for("Reader1"))
-     
-#Author Settings
-@login_required
-@app.route('/Athrdashboard/settings', methods=['POST','GET'])
-def athrsettings():
-    if request.method == "POST":
-        id = current_user.id
-        password = request.form.get('password')
-        username = request.form.get('username')
-        # email = current_user.auth_email
-        # user=Author.query.filter_by(auth_email=email).first()
-        # if check_password_hash(user.auth_pass,password):
-        if username == "" and password == "":
-            flash("Input either new username or new password","danger")
-
-        elif password == "":
-            db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}' WHERE `author`.`id` = {id}")
-
-        elif username == "":  
-            encpassword = generate_password_hash(password)
-            db.engine.execute(f"UPDATE `author` SET `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
-
-        else:
-            encpassword = generate_password_hash(password)
-            db.engine.execute(f"UPDATE `author` SET `auth_name` = '{username}', `auth_pass` = '{encpassword}' WHERE `author`.`id` = {id}")
-
-        flash("Details updated!","success")
-        return redirect('/Athrdashboard/settings')
-    # else:
-    #     print("Incorrect")
-    #     flash("Invalid Password","warning")
-
-    return render_template('athrsettings.html',username=current_user.auth_name, email=current_user.auth_email)
 
 
     

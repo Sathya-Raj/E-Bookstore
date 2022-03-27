@@ -9,8 +9,8 @@
 <li><a href="/Athrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
 <li ><a href="/Athrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
 <li ><a href="/Athrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
-<li class="active"><a href="/Athrdashboard/addbooks"><i class="fas fa-plus-circle"></i><span class="hidden-xs hidden-sm">Add Books</span></a></li>
-<li><a href="/Athrdashboard/athrmybooks"><i class="fas fa-book-open"></i><span class="hidden-xs hidden-sm">My Books</span></a></li>
+<li ><a href="/Athrdashboard/addbooks"><i class="fas fa-plus-circle"></i><span class="hidden-xs hidden-sm">Add Books</span></a></li>
+<li class="active"> <a href="/Athrdashboard/athrmybooks"><i class="fas fa-book-open"></i><span class="hidden-xs hidden-sm">My Books</span></a></li>
 <li><a href="/Athrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Settings</span></a></li>
 <li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
 </ul>
@@ -20,40 +20,31 @@
 <h1>Hello, {{username}}</h1>
 
 
-  <h3>Fill in to get started</h3>
-  <p>(All the fields mentioned in the form are to be mandatorily filled inorder to publish the books) </p>
-  <form action="/Athrdashboard/addbooks" method="POST" enctype = "multipart/form-data" class="px-1" >
+  <h3>Edit book details</h3>
+  <form action="/edit/{{posts.book_id}}" method="POST" enctype = "multipart/form-data" class="px-1" >
     <div class="form-group " >
       <label for="exampleFormControlInput1">Book Title</label>
-      <input type="text" class="form-control" id="Booktitle" name="Booktitle"required>
+      <input type="text" class="form-control" id="title" name="title"required>
     </div>
     
-   
     <div class="form-group ">
       <label for="exampleFormControlTextarea1">  Description </label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" col="4"required name="Description"></textarea>
+      <textarea class="form-control" id="desc" rows="3" col="4"required name="desc"></textarea>
     </div>
    <label for=""> Enter the price</label>
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" id="Free" name="Price"  value="Free" required>
-      <label class="form-check-label"  name="Price"  value="Free">Free</label>
+      <input class="form-check-input" type="radio" id="Free" name="price"  value="Free" required>
+      <label class="form-check-label"  name="price"  value="Free">Free</label>
     </div>
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" id ="Paid"name="Price"  value="Paid"required>
+      <input class="form-check-input" type="radio" id ="Paid"name="price"  value="Paid"required>
       <label class="form-check-label" >Paid</label>
     </div>
     <div class="form-group " >
       <label for="exampleFormControlInput1">Amount</label>
-      <input type="number" class="form-control" id="Amount" name="Amount" min="1" required>
+      <input type="number" class="form-control" id="Amount" name="Amount" min="1">
     </div>
-    <div class="form-group">
-      <label for="exampleFormControlFile1">Choose an image for your book</label>
-      <input type="file" class="form-control-file" id="exampleFormControlFile1 "accept="image/*" name="image"required>
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlFile1">Upload your pdf</label>
-      <input type="file" class="form-control-file" id="exampleFormControlFile1" accept="application/pdf" name="pdffile"required>
-    </div>
+
     <button type="submit" class="btn btn-primary " style="margin-bottom: 10px;" >Submit</button>
       {% with messages=get_flashed_messages(with_categories=true) %}
         {% if messages %}

@@ -1,0 +1,89 @@
+{% extends 'basedashboard.html' %}
+
+{% block homelogo %}
+<a hef="Reader"><a href="/Author" style="color: rgb(240, 85, 64); "><h3><i class="fas fa-home"></i></h3></a></a>
+{% endblock homelogo %}
+
+{% block navi %}
+ <ul>
+<li><a href="/Athrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
+<li ><a href="/Athrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
+<li ><a href="/Athrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
+<li ><a href="/Athrdashboard/addbooks"><i class="fas fa-plus-circle"></i><span class="hidden-xs hidden-sm">Add Books</span></a></li>
+<li class="active"> <a href="/Athrdashboard/athrmybooks"><i class="fas fa-book-open"></i><span class="hidden-xs hidden-sm">My Books</span></a></li>
+<li><a href="/Athrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Settings</span></a></li>
+<li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
+</ul>
+{% endblock navi %}
+
+{% block dashbody %}
+<h1>Hello, {{username}}</h1>
+<h4>Access all your books here</h4>
+<div class="row">
+    <div class="col-md-5 col-sm-5 col-xs-12 gutter ">
+    
+    </div>
+
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+
+<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+    {{message}}
+
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+    <table class="table table-striped "  >
+            <thead>
+            <tr>
+                <th scope="col">BOOK</th>
+                <th scope="col">BOOK TITLE</th>
+                <th scope="col">DESCRIPTION</th>
+                <th scope="col">PRICE</th>
+                <th scope="col">EDIT</th>
+                <th scope="col">DELETE</th>
+    
+            </tr>
+            </thead>
+
+            <tbody>
+                {% for post in query %}
+                  <tr>
+                    <th scope="row">
+                        <div class="book_image"> 
+                          <img src="{{ url_for('static', filename='css/images/books/')}}{{post.book_img}}" alt="book img"class="bookimg"  width="175px"></th>
+                    <td>{{post.book_title}}</td>
+                    <td>{{post.book_desc}}</td>
+                    <td>{{post.price}}</td>
+                  <td><a href="/edit/{{post.book_id}}"><button class="btn btn-primary">Edit </button> </a> </td>
+                  <td><a href="/deletebook/{{post.book_id}}"><button onclick="return confirm('Are you sure you want to Delete {{post.book_title}}');" class="btn btn-danger">Delete </button> </a> </td>
+                  </tr>
+              {% endfor %}
+                
+                </tbody>
+              </table>
+
+              {% with messages=get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+      
+                  <div class="alert-{{ category }} alert-dismissible " role="alert" style="padding-top: 5px;padding-bottom: 5px;">
+                      
+                      <strong style="padding:15px;">{{ message }}</strong>
+                      <button type="button" class="close bg danger" data-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+              
+                {% endfor %}
+                {% endif %}
+            {% endwith %}
+{% endblock dashbody %}
