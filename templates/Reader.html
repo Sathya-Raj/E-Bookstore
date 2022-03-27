@@ -23,20 +23,6 @@ Reader
 {% endblock nav %}
 
 {% block newreleases %}
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-  {% for category, message in messages %}
-
-    <div class="alert-{{ category }} alert-dismissible " role="alert" style="padding-top: 5px;padding-bottom: 5px;">
-        <strong style=" color: rgb(2, 2, 2); ">{{ message }}</strong>
-        <button type="button" class="close bg danger" data-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';"style="border:none; color:red;">
-          <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-
-  {% endfor %}
-  {% endif %}
-{% endwith %}
 {% for items in newreleases %}
 <div class="booksec">
     <div class="book_image"> 

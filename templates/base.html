@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style1.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='fontawesome/css/all.min.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-    
 </head>
 <body>
   {% with messages=get_flashed_messages(with_categories=true) %}
@@ -24,7 +23,7 @@
   {% for category, message in messages %}
 
     <div class="alert-{{ category }} alert-dismissible " role="alert" style="padding-top: 5px;padding-bottom: 5px;">
-        <strong style=" color: rgb(223, 19, 19); ">{{ message }}</strong>
+        <strong >{{ message }}</strong>
         <button type="button" class="close bg danger" data-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';"style="border:none; color:red;">
           <span aria-hidden="true">&times;</span>
         </button>

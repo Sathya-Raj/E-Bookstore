@@ -126,6 +126,7 @@ def logout():
     session.pop('shop_cart',None)
     session.pop('cart_price',None)
     logout_user()
+    flash('Loggedout sucessfully','success')
     return redirect(url_for('index'))
 
 
@@ -141,7 +142,7 @@ def loginathr():
         if user and check_password_hash(user.auth_pass,password):
             session["usertype"]='author'
             login_user(user)
-            #flash("Login Success","primary")
+            flash("Login Successful","success")
             return redirect(url_for('Author1'))
         else:
             flash("Invalid credentials!","danger")
@@ -161,7 +162,7 @@ def loginrdr():
         if user and check_password_hash(user.password,password):
             session["usertype"]='reader'
             login_user(user)
-            # flash("Login Success","primary")
+            flash("Login Successful","success")
             return redirect(url_for('Reader1'))
         else:
             print("Invalid!!")
@@ -227,7 +228,7 @@ def AddCart():
             total_cart_price=0
             if 'shop_cart'in session:
                 if book_id1 in session['shop_cart']:
-                    flash('Product already in cart!!')
+                    flash('Product already in cart!!','danger')
                     return redirect(request.referrer)
                 else :
                     session['shop_cart']=array_merge(session['shop_cart'],Dic_items)

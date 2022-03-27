@@ -504,3 +504,23 @@ footer a{
   
   
 }
+
+/* flash messages */
+.alert-danger{
+  background-color:rgb(241, 107, 107);
+  padding:15px
+}
+
+.alert-success button,.alert-danger button{
+  float: right;
+  border-radius:5px;
+
+}
+.alert-success button:hover,.alert-danger button:hover{
+  background-color: #ccc5c5;
+}
+
+.alert-success{
+  background-color:rgb(142, 228, 93);
+  padding:15px
+}
