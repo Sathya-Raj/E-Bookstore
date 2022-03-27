@@ -7,7 +7,7 @@
 {% block navi %}
 <ul>
     <li ><a href="/Rdrdashboard"><i class="fas fa-user"></i></i><span class="hidden-xs hidden-sm">Account</span></a></li>
-    <li><a href="/Rdrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlisht</span></a></li>
+    <li><a href="/Rdrdashboard/wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Wishlist</span></a></li>
     <li><a href="/Rdrdashboard/cart"><i class="fas fa-shopping-cart"></i><span class="hidden-xs hidden-sm">Cart</span></a></li>
     <li class="active"><a href="/Rdrdashboard/settings"><i class="fa fa-cog" aria-hidden="true"></i><span class="hidden-xs hidden-sm">Settings</span></a></li>
     <li><a href="/logout"><i class="fas fa-sign-out-alt"aria-hidden="true"></i><span class="hidden-xs hidden-sm">Logout</span></a></li>
@@ -25,19 +25,19 @@
       <p> {{email}} </p>
     </div>
 
-    <!--<div class="form-group">
+    <div class="form-group">
       <label for="password">Enter Password</label>
-      <input type="password" class="form-control" required id="password" placeholder="Old Password" name=password required >
-    </div>-->
+      <input type="password" class="form-control" required  placeholder="current Password" name='oldpassword' required >
+    </div>
 
     <div class="form-group">
       <label for="username">New Username</label>
-      <input type="text" class="form-control" id="username" placeholder="{{username}}" name=username >
+      <input type="text" class="form-control" id="username" placeholder="{{username}}" name='username' >
     </div>
 
     <div class="form-group">
       <label for="password">New Password</label>
-      <input type="password" class="form-control" id="password" placeholder="New password" name=password>
+      <input type="password" class="form-control"  placeholder="New password" name='newpassword'>
     </div>
 
     <div class="form-check">
